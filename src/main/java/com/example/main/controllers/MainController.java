@@ -3,6 +3,7 @@ package com.example.main.controllers;
 import com.example.main.domain.models.Users;
 import com.example.main.services.ServiceContainer;
 import com.example.main.services.Users.dto.UserCreateDTO;
+import com.example.main.services.Users.dto.UserUpdateDTO;
 
 import jakarta.validation.Valid;
 
@@ -30,7 +31,18 @@ public class MainController {
     }
 
     public void registerUser(@Valid UserCreateDTO user) {
-        System.out.println("UserCreateDTO llega al controlador principal: " + user.toString());
         serviceContainer.userService.create(user);
+    }
+
+    public void updateUser(long id, @Valid UserUpdateDTO user) {
+        serviceContainer.userService.update(id, user);
+    }
+
+    public void deleteUser(long id) {
+        serviceContainer.userService.delete(id);
+    }
+
+    public void login(String email, String password) {
+        serviceContainer.userService.login(email, password);
     }
 }
