@@ -1,0 +1,13 @@
+.env
+.vscode/
+target/
+http/
+*.log
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+.idea/
+*.swp
+.DS_Store
