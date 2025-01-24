@@ -8,6 +8,7 @@ import com.example.main.domain.models.Users;
 import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Users.dto.UserCreateDTO;
+import com.example.main.services.Users.dto.UserUpdateDTO;
 
 
 @Service
@@ -38,8 +39,9 @@ public class UserService {
     }
 
     public void create(UserCreateDTO user) {
-        System.out.println("UserCreateDTO entra al caso de uso de registro de usuario: " + user.toString());
-        System.out.println("Se procede a convertir el DTO a modelo de usuario");
+        if(usersRepository.findByEmail(user.getEmail()) != null) {
+            throw new CustomError(4000, "El correo ya está registrado");
+        }
         Users userModel = new Users(
             user.getEmail(),
             user.getPassword(),
@@ -48,8 +50,56 @@ public class UserService {
             user.getAddress(),
             user.getPhoneNumber()
             );
-        System.out.println("Modelo de usuario creado: " + userModel.toString());
-        System.out.println("Se procede a guardar el modelo de usuario en la base de datos");
         usersRepository.save(userModel);
+    }
+
+    public void update(long id, UserUpdateDTO user) {
+        Users userModel = usersRepository.findById(id).
+        orElseThrow(
+            () -> new CustomError(
+                4004, 
+                "Usuario no encontrado"
+            )
+        );
+        if (user.getPassword() != null) {
+            userModel.setPassword(user.getPassword());
+        }
+        if (user.getFirstName() != null) {
+            userModel.setFirstName(user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            userModel.setLastName(user.getLastName());
+        }
+        if (user.getAddress() != null) {
+            userModel.setAddress(user.getAddress());
+        }
+        if (user.getPhoneNumber() != null) {
+            userModel.setPhoneNumber(user.getPhoneNumber());
+        }
+
+        usersRepository.save(userModel);
+    }
+
+    public void delete(long id) {
+        Users userModel = usersRepository.findById(id).
+        orElseThrow(
+            () -> new CustomError(
+                4004, 
+                "Usuario no encontrado"
+            )
+        );
+        userModel.setActive(false);
+        usersRepository.save(userModel);
+    }
+
+    public void login(String email, String password) {
+        Users userModel = usersRepository.findByEmailAndPassword(email, password);
+        if (userModel == null) {
+            throw new CustomError(4004, "Usuario o contraseña incorrectos");
+        }
+        if (!userModel.isActive()) {
+            userModel.setActive(true);
+            usersRepository.save(userModel);
+        }
     }
 }
