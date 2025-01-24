@@ -30,6 +30,9 @@ public class Users {
     @Column(name = "phone_number", nullable = true)
     private String phoneNumber;
 
+    @Column(name = "active", nullable = false, columnDefinition = "boolean default false")
+    private boolean active = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Orders> orders;
 
@@ -128,5 +131,13 @@ public class Users {
 
     public void setCart(Carts cart) {
         this.cart = cart;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
