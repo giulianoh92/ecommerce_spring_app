@@ -1,7 +1,8 @@
+// filepath: /home/giu/dev/javaCode/demo/src/main/java/com/example/main/domain/models/Carts.java
 package com.example.main.domain.models;
 
 import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class Carts {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private Users user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
