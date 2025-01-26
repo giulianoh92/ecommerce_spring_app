@@ -1,7 +1,8 @@
+// filepath: /home/giu/dev/javaCode/demo/src/main/java/com/example/main/domain/models/Users.java
 package com.example.main.domain.models;
 
 import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -37,6 +38,7 @@ public class Users {
     private List<Orders> orders;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private Carts cart;
 
     public Users() {
