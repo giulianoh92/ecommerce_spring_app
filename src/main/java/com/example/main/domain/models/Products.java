@@ -1,8 +1,11 @@
 package com.example.main.domain.models;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "products")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Products {
     
     @Id
@@ -21,7 +24,7 @@ public class Products {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = true)
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
