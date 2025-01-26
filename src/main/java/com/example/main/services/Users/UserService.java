@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.main.domain.models.Carts;
 import com.example.main.domain.models.Users;
+import com.example.main.domain.repositories.CartsRepository;
 import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Users.dto.UserCreateDTO;
@@ -16,8 +18,14 @@ public class UserService {
 
     private final UsersRepository usersRepository;
 
-    public UserService(UsersRepository usersRepository) {
+    private final CartsRepository cartsRepository;
+
+    public UserService(
+        UsersRepository usersRepository,
+        CartsRepository cartsRepository
+    ) {
         this.usersRepository = usersRepository;
+        this.cartsRepository = cartsRepository;
     }
 
     public List<Users> getAll() {
@@ -50,7 +58,8 @@ public class UserService {
             user.getAddress(),
             user.getPhoneNumber()
             );
-        usersRepository.save(userModel);
+        Users newUser = usersRepository.save(userModel);
+        cartsRepository.save(new Carts(newUser));
     }
 
     public void update(long id, UserUpdateDTO user) {
