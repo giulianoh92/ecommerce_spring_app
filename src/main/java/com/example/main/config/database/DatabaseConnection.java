@@ -1,9 +1,9 @@
 package com.example.main.config.database;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,31 +11,31 @@ public class DatabaseConnection {
 
     private SessionFactory sessionFactory;
 
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String dbDriver;
+
     public void connect() {
         try {
-            // Cargar las credenciales del archivo .env
-            Dotenv dotenv = Dotenv.load();
-            String url = dotenv.get("DB_URL");
-            String username = dotenv.get("DB_USERNAME");
-            String password = dotenv.get("DB_PASSWORD");
-
             // Configuración de Hibernate
             Configuration configuration = new Configuration();
-            configuration.setProperty("hibernate.connection.url", url);
-            configuration.setProperty("hibernate.connection.username", username);
-            configuration.setProperty("hibernate.connection.password", password);
-            configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-            configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+
+            // Configurar las propiedades de conexión
+            configuration.setProperty("hibernate.connection.url", dbUrl);
+            configuration.setProperty("hibernate.connection.username", dbUsername);
+            configuration.setProperty("hibernate.connection.password", dbPassword);
+            configuration.setProperty("hibernate.connection.driver_class", dbDriver);
 
             // Añadir paquetes de modelos
-            configuration.addPackage("com.example.main.domain.orm.Items");
-            configuration.addPackage("com.example.main.domain.orm.Orders");
-            configuration.addPackage("com.example.main.domain.orm.PaymentMethods");
-            configuration.addPackage("com.example.main.domain.orm.Payments");
-            configuration.addPackage("com.example.main.domain.orm.ProductCategories");
-            configuration.addPackage("com.example.main.domain.orm.Products");
-            configuration.addPackage("com.example.main.domain.orm.Roles");
-            configuration.addPackage("com.example.main.domain.orm.Users");
+            configuration.addPackage("com.example.main.domain.models");
 
             sessionFactory = configuration.buildSessionFactory();
 
