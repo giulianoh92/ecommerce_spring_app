@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
@@ -26,7 +25,6 @@ import com.example.main.services.Products.dto.ProductUpdateDTO;
 import com.example.main.services.Users.dto.UserCreateDTO;
 import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Validated
@@ -120,6 +118,7 @@ public class HttpController {
         return new ResponseEntity<>("Categoría creada con éxito", HttpStatus.CREATED);
     }
     
+
     
 
 }
