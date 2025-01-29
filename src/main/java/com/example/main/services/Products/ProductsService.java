@@ -1,7 +1,9 @@
 package com.example.main.services.Products;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.main.domain.models.Categories;
@@ -11,13 +13,16 @@ import com.example.main.domain.repositories.ProductsRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
+import com.example.main.services.Products.dto.ProductGetDTO;
 import com.example.main.services.Products.dto.ProductUpdateDTO;
 
 @Service
 public class ProductsService {
 
+    @Autowired
     private final ProductsRepository productsRepository;
 
+    @Autowired
     private final CategoriesRepository categoriesRepository;
 
     public ProductsService(
@@ -28,23 +33,23 @@ public class ProductsService {
         this.categoriesRepository = categoriesRepository;
     }
 
-    public List<Products> getAll() {
+    public List<ProductGetDTO> getAll() {
         List<Products> products = productsRepository.findAll();
         if (products.isEmpty()) {
             throw new CustomError(4004, "No hay productos registrados");
         }
 
-        return products;
+        return products.stream().map(product -> ProductGetDTO.mapToDto(product)).collect(Collectors.toList());
     }
 
-    public Products getById(long id) {
-        return productsRepository.findById(id).
+    public ProductGetDTO getById(long id) {
+        return ProductGetDTO.mapToDto(productsRepository.findById(id).
         orElseThrow(
             () -> new CustomError(
                 4004, 
                 "Producto no encontrado"
             )
-        );
+        ));
     }
 
     public void create(ProductCreateDTO product) {

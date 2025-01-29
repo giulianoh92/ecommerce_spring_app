@@ -1,7 +1,9 @@
 package com.example.main.services.Users;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.main.domain.models.Carts;
@@ -10,14 +12,17 @@ import com.example.main.domain.repositories.CartsRepository;
 import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Users.dto.UserCreateDTO;
+import com.example.main.services.Users.dto.UserGetDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
 
 
 @Service
 public class UserService {
 
+    @Autowired
     private final UsersRepository usersRepository;
 
+    @Autowired
     private final CartsRepository cartsRepository;
 
     public UserService(
@@ -28,22 +33,22 @@ public class UserService {
         this.cartsRepository = cartsRepository;
     }
 
-    public List<Users> getAll() {
+    public List<UserGetDTO> getAll() {
         List<Users> users = usersRepository.findAll();
         if (users.isEmpty()) {
             throw new CustomError(4004, "No hay usuarios registrados");
         }
-        return users;
+        return users.stream().map(user -> UserGetDTO.mapToDto(user)).collect(Collectors.toList());
     }
 
-    public Users getById(long id) {
-        return usersRepository.findById(id).
+    public UserGetDTO getById(long id) {
+        return UserGetDTO.mapToDto(usersRepository.findById(id).
         orElseThrow(
             () -> new CustomError(
                 4004, 
                 "Usuario no encontrado"
             )
-        );
+        ));
     }
 
     public void create(UserCreateDTO user) {

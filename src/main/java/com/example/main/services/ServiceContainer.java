@@ -3,6 +3,7 @@ package com.example.main.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.main.services.Carts.CartsService;
 import com.example.main.services.Orders.OrdersService;
 import com.example.main.services.Products.ProductsService;
 import com.example.main.services.Users.UserService;
@@ -46,5 +47,8 @@ public class ServiceContainer {
 
     @Autowired
     public ProductsService productsService = new ProductsService(productsRepository, categoriesRepository);
+
+    @Autowired
+    public CartsService cartsService = new CartsService(cartsRepository, productsRepository, usersRepository, ordersRepository, itemsRepository);
 
 }
