@@ -49,6 +49,6 @@ public class ServiceContainer {
     public ProductsService productsService = new ProductsService(productsRepository, categoriesRepository);
 
     @Autowired
-    public CartsService cartsService = new CartsService(cartsRepository, productsRepository, usersRepository, ordersRepository, itemsRepository);
+    public CartsService cartsService = new CartsService(cartsRepository, productsRepository, usersRepository, ordersRepository, itemsRepository, statusesRepository);
 
 }
