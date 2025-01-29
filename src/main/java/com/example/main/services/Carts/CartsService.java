@@ -9,11 +9,14 @@ import org.springframework.stereotype.Service;
 import com.example.main.domain.models.Carts;
 import com.example.main.domain.models.Items;
 import com.example.main.domain.models.Orders;
+import com.example.main.domain.models.Products;
+import com.example.main.domain.models.Statuses;
 import com.example.main.domain.models.Users;
 import com.example.main.domain.repositories.CartsRepository;
 import com.example.main.domain.repositories.ItemsRepository;
 import com.example.main.domain.repositories.OrdersRepository;
 import com.example.main.domain.repositories.ProductsRepository;
+import com.example.main.domain.repositories.StatusesRepository;
 import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Carts.dto.CartGetDTO;
@@ -36,18 +39,23 @@ public class CartsService {
     @Autowired
     private final ItemsRepository itemsRepository;
 
+    @Autowired
+    private final StatusesRepository statusesRepository;
+
     public CartsService(
         CartsRepository cartsRepository,
         ProductsRepository productsRepository,
         UsersRepository usersRepository,
         OrdersRepository ordersRepository,
-        ItemsRepository itemsRepository
+        ItemsRepository itemsRepository,
+        StatusesRepository statusesRepository
     ) {
         this.cartsRepository = cartsRepository;
         this.productsRepository = productsRepository;
         this.usersRepository = usersRepository;
         this.ordersRepository = ordersRepository;
         this.itemsRepository = itemsRepository;
+        this.statusesRepository = statusesRepository;
     }
 
     public void createCart(long userId) {
@@ -59,15 +67,46 @@ public class CartsService {
     }
 
     public void addItemToCart(long userId, long productId, int quantity) {
+
+        Products product = productsRepository.findById(productId).orElseThrow(
+            () -> new CustomError(4004, "Producto no encontrado")
+        );
+
+        if (quantity <= 0) {
+            throw new CustomError(4004, "La cantidad debe ser mayor a 0");
+        }
+
+        if (product.getStock() < quantity) {
+            throw new CustomError(4004, "No hay suficiente stock");
+        }
+
         Carts cart = cartsRepository.findByUserId(userId).orElseThrow(
             () -> new CustomError(4004, "Carrito no encontrado")
         );
-        Items item = new Items(productsRepository.findById(productId).orElseThrow(
-            () -> new CustomError(4004, "Producto no encontrado")
-        ), quantity);
-        item.setCart(cart); // Asocia el item con el carrito
-        itemsRepository.save(item); // Guarda el item en la base de datos
-        cart.addItem(item);
+        
+        // Verifica si el item ya existe en el carrito
+        Items existingItem = cart.getItems().stream()
+            .filter(item -> item.getProduct().getId() == productId)
+            .findFirst()
+            .orElse(null);
+        
+        if (existingItem != null) {
+            // Si el item ya existe, actualiza la cantidad
+            existingItem.setQuantity(existingItem.getQuantity() + quantity);
+            if (product.getStock() < existingItem.getQuantity()) {
+                throw new CustomError(4004, "No hay suficiente stock");
+            }
+            itemsRepository.save(existingItem);
+        } else {
+            // Si el item no existe, crea uno nuevo
+            Items newItem = new Items(productsRepository.findById(productId).orElseThrow(
+                () -> new CustomError(4004, "Producto no encontrado")
+            ), quantity);
+            newItem.setCart(cart); // Asocia el item con el carrito
+            itemsRepository.save(newItem); // Guarda el item en la base de datos
+            cart.addItem(newItem);
+        }
+        
         cartsRepository.save(cart);
     }
 
@@ -84,6 +123,15 @@ public class CartsService {
     }
 
     public void updateItemInCart(long userId, long productId, int quantity) {
+        Products product = productsRepository.findById(productId).orElseThrow(
+            () -> new CustomError(4004, "Producto no encontrado")
+        );
+        if (quantity <= 0) {
+            throw new CustomError(4004, "La cantidad debe ser mayor a 0");
+        }
+        if (product.getStock() < quantity) {
+            throw new CustomError(4004, "No hay suficiente stock");
+        }
         Carts cart = cartsRepository.findById(userId).orElseThrow(
             () -> new CustomError(4004, "Carrito no encontrado")
         );
@@ -107,13 +155,41 @@ public class CartsService {
     }
 
     public void checkout(long userId) {
-        Carts cart = cartsRepository.findById(userId).orElseThrow(
+        Carts cart = cartsRepository.findByUserId(userId).orElseThrow(
             () -> new CustomError(4004, "Carrito no encontrado")
         );
-        Orders order = ordersRepository.save(new Orders(cart));
-        itemsRepository.saveAll(order.getItems().stream().peek(item -> item.setOrder(order)).collect(Collectors.toList()));
+        Statuses status = statusesRepository.findByName("Pendiente").orElseGet(() -> statusesRepository.save(new Statuses("Pendiente")));
+        Orders order = new Orders();
+        order.setTotalPrice(cart.getTotal());
+        order.setUser(cart.getUser());
+        order.setStatus(status);
+    
+        // Guarda la instancia de Orders primero
+        Orders newOrder = ordersRepository.save(order);
+    
+        // Actualiza los Items existentes para que apunten al nuevo Orders y desasocien el Carts
+        List<Items> orderItems = cart.getItems().stream()
+            .peek(item -> {
+                item.setOrder(newOrder);
+                item.setCart(null);
+    
+                // Actualiza el stock del producto
+                Products product = item.getProduct();
+                int newStock = product.getStock() - item.getQuantity();
+                if (newStock < 0) {
+                    throw new CustomError(4004, "Stock insuficiente para el producto: " + product.getName());
+                }
+                product.setStock(newStock);
+                productsRepository.save(product);
+            })
+            .collect(Collectors.toList());
+        itemsRepository.saveAll(orderItems);
+    
+        // Actualiza el carrito para que no tenga items
         cart.setItems(null);
         cartsRepository.save(cart);
+    
+        ordersRepository.save(newOrder);
     }
 
     public List<CartGetDTO> getAllCarts() {
@@ -130,4 +206,9 @@ public class CartsService {
         ));
     }
     
+    public CartGetDTO getUserCart(long userId) {
+        return CartGetDTO.mapToDto(cartsRepository.findByUserId(userId).orElseThrow(
+            () -> new CustomError(4004, "Carrito no encontrado")
+        ));
+    }
 }
