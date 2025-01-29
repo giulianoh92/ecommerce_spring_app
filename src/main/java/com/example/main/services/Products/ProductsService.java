@@ -1,5 +1,6 @@
 package com.example.main.services.Products;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -144,6 +145,37 @@ public class ProductsService {
             category.getName()
         );
         categoriesRepository.save(newCategory);
+    }
+
+    public void populateDatabaseWithProducts() {
+        List<Categories> categories = new ArrayList<Categories>();
+        categories.add(new Categories("Electrónicos"));
+        categories.add(new Categories("Hogar"));
+        categories.add(new Categories("Deportes"));
+        categories.add(new Categories("Juguetes"));
+        categories.add(new Categories("Ropa"));
+        categories.add(new Categories("Calzado"));
+        categories.add(new Categories("Accesorios"));
+        categories.add(new Categories("Libros"));
+
+        categoriesRepository.saveAll(categories);
+
+        List<Products> products = new ArrayList<Products>();
+        products.add(new Products("Laptop", "Laptop HP", 500.00, 10, "https://www.google.com", categories.get(0)));
+        products.add(new Products("Smartphone", "Smartphone Samsung", 300.00, 20, "https://www.google.com", categories.get(0)));
+        products.add(new Products("TV", "TV LG", 400.00, 15, "https://www.google.com", categories.get(0)));
+        products.add(new Products("Sofá", "Sofá de 3 plazas", 200.00, 5, "https://www.google.com", categories.get(1)));
+        products.add(new Products("Mesa", "Mesa de centro", 100.00, 10, "https://www.google.com", categories.get(1)));
+        products.add(new Products("Bicicleta", "Bicicleta de montaña", 150.00, 8, "https://www.google.com", categories.get(2)));
+        products.add(new Products("Balón", "Balón de fútbol", 20.00, 30, "https://www.google.com", categories.get(2)));
+        products.add(new Products("Muñeca", "Muñeca Barbie", 10.00, 50, "https://www.google.com", categories.get(3)));
+        products.add(new Products("Camisa", "Camisa de vestir", 30.00, 25, "https://www.google.com", categories.get(4)));
+        products.add(new Products("Zapatos", "Zapatos de cuero", 40.00, 20, "https://www.google.com", categories.get(5)));
+        products.add(new Products("Reloj", "Reloj de pulsera", 50.00, 15, "https://www.google.com", categories.get(6)));
+        products.add(new Products("Lentes", "Lentes de sol", 15.00, 40, "https://www.google.com", categories.get(6)));
+        products.add(new Products("Libro", "Libro de ciencia ficción", 5.00, 100, "https://www.google.com", categories.get(7)));
+
+        productsRepository.saveAll(products);
     }
     
 }
