@@ -2,7 +2,9 @@
 package com.example.main.domain.models;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -35,6 +37,7 @@ public class Users {
     private boolean active = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private List<Orders> orders;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
@@ -141,5 +144,9 @@ public class Users {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public void addOrder(Orders order) {
+        orders.add(order);
     }
 }

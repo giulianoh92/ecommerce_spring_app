@@ -1,6 +1,9 @@
 package com.example.main.domain.models;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +19,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,14 +27,38 @@ public class Orders {
     private Statuses status;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Items> items;
 
     public Orders() {
     }
 
-    public Orders(Double totalPrice, Users user, Statuses status) {
+    public Orders(Carts cart){
+        this.totalPrice = cart.getTotal();
+        this.user = cart.getUser();
+        this.items = cart.getItems();
+        this.status = new Statuses("Pendiente");
+    }
+
+    public Orders(Double totalPrice, Users user, List<Items> items) {
         this.totalPrice = totalPrice;
         this.user = user;
+        this.items = items;
+        this.status = new Statuses("Pendiente");
+    }
+
+    public Orders(Double totalPrice, Users user, List<Items> items, Statuses status) {
+        this.totalPrice = totalPrice;
+        this.user = user;
+        this.items = items;
+        this.status = status;
+    }
+
+    public Orders(Long id, Double totalPrice, Users user, List<Items> items, Statuses status) {
+        this.id = id;
+        this.totalPrice = totalPrice;
+        this.user = user;
+        this.items = items;
         this.status = status;
     }
 
@@ -79,6 +107,17 @@ public class Orders {
 
     public void setItems(List<Items> items) {
         this.items = items;
+    }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id=" + id +
+                ", totalPrice=" + totalPrice +
+                ", user=" + user +
+                ", status=" + status +
+                ", items=" + items +
+                '}';
     }
 
 }

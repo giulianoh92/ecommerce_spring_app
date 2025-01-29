@@ -1,8 +1,10 @@
-// filepath: /home/giu/dev/javaCode/demo/src/main/java/com/example/main/domain/models/Carts.java
 package com.example.main.domain.models;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -10,16 +12,15 @@ import jakarta.persistence.*;
 public class Carts {
 
     @Id
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Users user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Items> items;
 
     public Carts() {
@@ -48,5 +49,43 @@ public class Carts {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public List<Items> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Items> items) {
+        this.items = items;
+    }
+
+    public void addItem(Items item) {
+        items.add(item);
+    }
+
+    public void removeItem(Items item) {
+        items.remove(item);
+    }
+
+    public void updateItem(Items item, int quantity) {
+        items.stream()
+            .filter(i -> i.getProduct().getId() == item.getProduct().getId())
+            .findFirst()
+            .ifPresent(i -> i.setQuantity(quantity));
+    }
+
+    public void clearItems() {
+        items.clear();
+    }
+
+    public double getTotal() {
+        return items.stream()
+            .mapToDouble(item -> item.getProduct().getUnitPrice() * item.getQuantity())
+            .sum();
+    }
+
+    @Override
+    public String toString() {
+        return "Carts [id=" + id + ", user=" + user + ", items=" + items + "]";
     }
 }

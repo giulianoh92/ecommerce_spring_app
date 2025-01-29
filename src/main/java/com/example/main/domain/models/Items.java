@@ -1,4 +1,6 @@
 package com.example.main.domain.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +15,8 @@ public class Items {
     private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = true)
+    @JsonBackReference
     private Orders order;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -21,10 +24,16 @@ public class Items {
     private Products product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", nullable = false)
+    @JoinColumn(name = "cart_id", nullable = true)
+    @JsonBackReference
     private Carts cart;
 
     public Items() {
+    }
+
+    public Items(Products product, Integer quantity) {
+        this.product = product;
+        this.quantity = quantity;
     }
 
     public Items(Integer quantity, Orders order, Products product, Carts cart) {
@@ -80,5 +89,16 @@ public class Items {
 
     public void setCart(Carts cart) {
         this.cart = cart;
+    }
+
+    @Override
+    public String toString() {
+        return "Items{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", order=" + order +
+                ", product=" + product +
+                ", cart=" + cart +
+                '}';
     }
 }
