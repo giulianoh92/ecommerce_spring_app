@@ -2,12 +2,14 @@ package com.example.main.domain.models;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Orders {
     
     @Id
@@ -29,6 +31,7 @@ public class Orders {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Items> items;
+
 
     public Orders() {
     }

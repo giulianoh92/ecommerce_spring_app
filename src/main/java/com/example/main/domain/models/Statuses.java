@@ -1,8 +1,10 @@
 package com.example.main.domain.models;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.*;
 @Entity
 @Table(name = "statuses")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Statuses {
 
     @Id
