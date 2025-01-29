@@ -1,13 +1,14 @@
 package com.example.main.controllers;
 
 import com.example.main.domain.models.Categories;
-import com.example.main.domain.models.Products;
-import com.example.main.domain.models.Users;
 import com.example.main.services.ServiceContainer;
+import com.example.main.services.Carts.dto.CartGetDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
+import com.example.main.services.Products.dto.ProductGetDTO;
 import com.example.main.services.Products.dto.ProductUpdateDTO;
 import com.example.main.services.Users.dto.UserCreateDTO;
+import com.example.main.services.Users.dto.UserGetDTO;
 import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
 
@@ -26,14 +27,12 @@ public class MainController {
     @Autowired
     private ServiceContainer serviceContainer;
 
-    public List<Users> getAllUsers() {
-        List<Users> users = serviceContainer.userService.getAll();
-        return users;
+    public List<UserGetDTO> getAllUsers() {
+        return serviceContainer.userService.getAll();
     }
 
-    public Users getUserById(long id) {
-        Users user = serviceContainer.userService.getById(id);
-        return user;
+    public UserGetDTO getUserById(long id) {
+        return serviceContainer.userService.getById(id);
     }
 
     public void registerUser(@Valid UserCreateDTO user) {
@@ -52,14 +51,12 @@ public class MainController {
         serviceContainer.userService.login(user.getEmail(), user.getPassword());
     }
 
-    public List<Products> getAllProducts() {
-        List<Products> products = serviceContainer.productsService.getAll();
-        return products;
+    public List<ProductGetDTO> getAllProducts() {
+        return serviceContainer.productsService.getAll();
     }
 
-    public Products getProductById(long id) {
-        Products product = serviceContainer.productsService.getById(id);
-        return product;
+    public ProductGetDTO getProductById(long id) {
+        return serviceContainer.productsService.getById(id);
     }
 
     public void createProduct(ProductCreateDTO product) {
@@ -86,5 +83,33 @@ public class MainController {
 
     public void createCategory(CategoryCreateDTO category) {
         serviceContainer.productsService.createCategory(category);
+    }
+
+    public void addItemToCart(long userId, long productId, int quantity) {
+        serviceContainer.cartsService.addItemToCart(userId, productId, quantity);
+    }
+
+    public void removeItemFromCart(long userId, long productId) {
+        serviceContainer.cartsService.removeItemFromCart(userId, productId);
+    }
+
+    public void updateItemInCart(long userId, long productId, int quantity) {
+        serviceContainer.cartsService.updateItemInCart(userId, productId, quantity);
+    }
+
+    public void clearCart(long userId) {
+        serviceContainer.cartsService.clearCart(userId);
+    }
+
+    public void checkout(long userId) {
+        serviceContainer.cartsService.checkout(userId);
+    }
+
+    public List<CartGetDTO> getAllCarts() {
+        return serviceContainer.cartsService.getAllCarts();
+    }
+
+    public CartGetDTO getCartById(long id) {
+        return serviceContainer.cartsService.getCartById(id);
     }
 }

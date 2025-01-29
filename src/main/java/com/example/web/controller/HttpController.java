@@ -13,16 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import jakarta.validation.Valid;
 
 import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
-import com.example.main.domain.models.Products;
-import com.example.main.domain.models.Users;
+import com.example.main.services.Carts.dto.CartGetDTO;
+import com.example.main.services.Carts.dto.CartItemDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
+import com.example.main.services.Products.dto.ProductGetDTO;
 import com.example.main.services.Products.dto.ProductUpdateDTO;
 import com.example.main.services.Users.dto.UserCreateDTO;
+import com.example.main.services.Users.dto.UserGetDTO;
 import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
 
@@ -35,14 +38,14 @@ public class HttpController {
     private MainController mainController;
 
     @GetMapping("/users")
-    public ResponseEntity<List<Users>> getAllUsers() {
-        List<Users> users = mainController.getAllUsers();
+    public ResponseEntity<List<UserGetDTO>> getAllUsers() {
+        List<UserGetDTO> users = mainController.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable long id) {
-        Users user = mainController.getUserById(id);
+    public ResponseEntity<UserGetDTO> getUserById(@PathVariable long id) {
+        UserGetDTO user = mainController.getUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -71,14 +74,14 @@ public class HttpController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<Products>> getAllProducts() {
-        List<Products> products = mainController.getAllProducts();
+    public ResponseEntity<List<ProductGetDTO>> getAllProducts() {
+        List<ProductGetDTO> products = mainController.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<Products> getProductById(@PathVariable long id) {
-        Products product = mainController.getProductById(id);
+    public ResponseEntity<ProductGetDTO> getProductById(@PathVariable long id) {
+        ProductGetDTO product = mainController.getProductById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
@@ -117,8 +120,47 @@ public class HttpController {
         mainController.createCategory(category);
         return new ResponseEntity<>("Categoría creada con éxito", HttpStatus.CREATED);
     }
-    
 
+    @GetMapping("/users/cart")
+    public ResponseEntity<Object> getAllCarts() {
+        List<CartGetDTO> carts = mainController.getAllCarts();
+        return new ResponseEntity<>(carts, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/cart/{id}")
+    public ResponseEntity<Object> getCartById(@PathVariable long id) {
+        CartGetDTO cart = mainController.getCartById(id);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
+    }
     
+    @PostMapping("/users/cart/add")
+    public ResponseEntity<Object> addItemToCart(@Valid @RequestBody CartItemDTO cartItem) {
+        mainController.addItemToCart(cartItem.getUserId(), cartItem.getProductId(), cartItem.getQuantity());
+        return new ResponseEntity<>("Producto añadido al carrito con éxito", HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/users/cart/remove")
+    public ResponseEntity<Object> removeItemFromCart(@RequestBody long userId, long productId) {
+        mainController.removeItemFromCart(userId, productId);
+        return new ResponseEntity<>("Producto eliminado del carrito con éxito", HttpStatus.OK);
+    }
+
+    @PutMapping("/users/cart/update")
+    public ResponseEntity<Object> updateItemInCart(@RequestBody long userId, long productId, int quantity) {
+        mainController.updateItemInCart(userId, productId, quantity);
+        return new ResponseEntity<>("Producto actualizado en el carrito con éxito", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/users/cart/clear/{userId}")
+    public ResponseEntity<Object> clearCart(@PathVariable long userId) {
+        mainController.clearCart(userId);
+        return new ResponseEntity<>("Carrito vaciado con éxito", HttpStatus.OK);
+    }
+
+    @PostMapping("/users/cart/checkout")
+    public ResponseEntity<Object> checkout(@RequestBody long userId) {
+        mainController.checkout(userId);
+        return new ResponseEntity<>("Compra realizada con éxito", HttpStatus.CREATED);
+    }
 
 }
