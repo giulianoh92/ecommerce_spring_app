@@ -3,6 +3,7 @@ package com.example.main.controllers;
 import com.example.main.domain.models.Categories;
 import com.example.main.services.ServiceContainer;
 import com.example.main.services.Carts.dto.CartGetDTO;
+import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
 import com.example.main.services.Products.dto.ProductGetDTO;
@@ -111,5 +112,29 @@ public class MainController {
 
     public CartGetDTO getCartById(long id) {
         return serviceContainer.cartsService.getCartById(id);
+    }
+
+    public CartGetDTO getCartByUserId(long userId) {
+        return serviceContainer.cartsService.getUserCart(userId);
+    }
+
+    public void updateOrderStatus(long orderId, String status) {
+        serviceContainer.ordersService.updateOrderStatus(orderId, status);
+    }
+
+    public List<OrderGetDTO> getAllOrders() {
+        return serviceContainer.ordersService.getAllOrders();
+    }
+
+    public OrderGetDTO getOrderById(long id) {
+        return serviceContainer.ordersService.getOrderById(id);
+    }
+
+    public List<OrderGetDTO> getOrdersByUserId(long userId) {
+        return serviceContainer.ordersService.getOrdersByUserId(userId);
+    }
+
+    public void populateDatabaseWithSampleData() {
+        serviceContainer.productsService.populateDatabaseWithProducts();
     }
 }
