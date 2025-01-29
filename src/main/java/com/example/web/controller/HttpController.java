@@ -19,7 +19,6 @@ import jakarta.validation.Valid;
 
 import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
-import com.example.main.domain.models.Orders;
 import com.example.main.services.Carts.dto.CartGetDTO;
 import com.example.main.services.Carts.dto.CartItemDTO;
 import com.example.main.services.Orders.dto.OrderGetDTO;
