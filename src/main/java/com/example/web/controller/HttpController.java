@@ -1,6 +1,7 @@
 package com.example.web.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,10 @@ import jakarta.validation.Valid;
 
 import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
+import com.example.main.domain.models.Orders;
 import com.example.main.services.Carts.dto.CartGetDTO;
 import com.example.main.services.Carts.dto.CartItemDTO;
+import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
 import com.example.main.services.Products.dto.ProductGetDTO;
@@ -132,6 +135,12 @@ public class HttpController {
         CartGetDTO cart = mainController.getCartById(id);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
+
+    @GetMapping("/users/cart/user/{userId}")
+    public ResponseEntity<Object> getCartByUserId(@PathVariable long userId) {
+        CartGetDTO cart = mainController.getCartByUserId(userId);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
+    }
     
     @PostMapping("/users/cart/add")
     public ResponseEntity<Object> addItemToCart(@Valid @RequestBody CartItemDTO cartItem) {
@@ -146,8 +155,8 @@ public class HttpController {
     }
 
     @PutMapping("/users/cart/update")
-    public ResponseEntity<Object> updateItemInCart(@RequestBody long userId, long productId, int quantity) {
-        mainController.updateItemInCart(userId, productId, quantity);
+    public ResponseEntity<Object> updateItemInCart(@Valid @RequestBody CartItemDTO cartItem) {
+        mainController.updateItemInCart(cartItem.getUserId(), cartItem.getProductId(), cartItem.getQuantity());
         return new ResponseEntity<>("Producto actualizado en el carrito con éxito", HttpStatus.OK);
     }
 
@@ -157,10 +166,44 @@ public class HttpController {
         return new ResponseEntity<>("Carrito vaciado con éxito", HttpStatus.OK);
     }
 
-    @PostMapping("/users/cart/checkout")
-    public ResponseEntity<Object> checkout(@RequestBody long userId) {
+    @PostMapping("/users/cart/checkout/{userId}")
+    public ResponseEntity<Object> checkout(@PathVariable long userId) {
         mainController.checkout(userId);
         return new ResponseEntity<>("Compra realizada con éxito", HttpStatus.CREATED);
+    }
+
+    @GetMapping("/users/orders")
+    public ResponseEntity<Object> getAllOrders() {
+        List<OrderGetDTO> orders = mainController.getAllOrders();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/orders/{id}")
+    public ResponseEntity<Object> getOrderById(@PathVariable long id) {
+        OrderGetDTO order = mainController.getOrderById(id);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/orders/user/{userId}")
+    public ResponseEntity<Object> getOrdersByUserId(@PathVariable long userId) {
+        List<OrderGetDTO> orders = mainController.getOrdersByUserId(userId);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @PostMapping("/users/orders/change-status/{orderId}")
+    public ResponseEntity<Object> updateOrderStatus(@PathVariable long orderId, @RequestBody Map<String, String> request) {
+        String status = request.get("status");
+        if (status == null) {
+            return new ResponseEntity<>("Estado no proporcionado", HttpStatus.BAD_REQUEST);
+        }
+        mainController.updateOrderStatus(orderId, status);
+        return new ResponseEntity<>("Estado del pedido actualizado con éxito", HttpStatus.OK);
+    }
+    
+    @GetMapping("/products/populate")
+    public ResponseEntity<Object> populateDatabaseWithProducts() {
+        mainController.populateDatabaseWithSampleData();
+        return new ResponseEntity<>("Base de datos poblada con productos", HttpStatus.OK);
     }
 
 }
