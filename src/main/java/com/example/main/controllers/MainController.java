@@ -49,7 +49,7 @@ public class MainController {
     }
 
     public void login(UserLoginDTO user) {
-        serviceContainer.userService.login(user.getEmail(), user.getPassword());
+        serviceContainer.userService.login(user);
     }
 
     public List<ProductGetDTO> getAllProducts() {

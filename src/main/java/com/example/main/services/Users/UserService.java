@@ -13,8 +13,9 @@ import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Users.dto.UserCreateDTO;
 import com.example.main.services.Users.dto.UserGetDTO;
+import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
-
+import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 public class UserService {
@@ -52,6 +53,7 @@ public class UserService {
     }
 
     public void create(UserCreateDTO user) {
+        user.hashPassword();
         if(usersRepository.findByEmail(user.getEmail()) != null) {
             throw new CustomError(4000, "El correo ya está registrado");
         }
@@ -68,6 +70,7 @@ public class UserService {
     }
 
     public void update(long id, UserUpdateDTO user) {
+        user.hashPassword();
         Users userModel = usersRepository.findById(id).
         orElseThrow(
             () -> new CustomError(
@@ -106,9 +109,9 @@ public class UserService {
         usersRepository.save(userModel);
     }
 
-    public void login(String email, String password) {
-        Users userModel = usersRepository.findByEmailAndPassword(email, password);
-        if (userModel == null) {
+    public void login(UserLoginDTO user) {
+        Users userModel = usersRepository.findByEmail(user.getEmail());
+        if (userModel == null || !BCrypt.checkpw(user.getPassword(), userModel.getPassword())) {
             throw new CustomError(4004, "Usuario o contraseña incorrectos");
         }
         if (!userModel.isActive()) {
