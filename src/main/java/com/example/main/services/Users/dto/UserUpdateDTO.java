@@ -1,7 +1,7 @@
 package com.example.main.services.Users.dto;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserUpdateDTO {
 
@@ -71,5 +71,13 @@ public class UserUpdateDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void hashPassword() {
+        this.password = BCrypt.hashpw(this.password, BCrypt.gensalt());
+    }
+
+    public boolean checkPassword(String plainPassword) {
+        return BCrypt.checkpw(plainPassword, this.password);
     }
 }
