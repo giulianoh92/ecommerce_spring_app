@@ -40,7 +40,10 @@ public class ProductsService {
             throw new CustomError(4004, "No hay productos registrados");
         }
 
-        return products.stream().map(product -> ProductGetDTO.mapToDto(product)).collect(Collectors.toList());
+        return products.stream()
+            .sorted((p1, p2) -> Long.compare(p1.getId(), p2.getId()))
+            .map(product -> ProductGetDTO.mapToDto(product))
+            .collect(Collectors.toList());
     }
 
     public ProductGetDTO getById(long id) {
