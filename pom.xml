@@ -17,7 +17,8 @@
     </parent>
 
     <properties>
-        <java.version>11</java.version>
+        <start-class>com.example.App</start-class>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
