@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.example.desktop.controller.SwingController;
 import com.example.main.config.database.DatabaseConnection;
 
 import java.awt.GraphicsEnvironment;
@@ -12,8 +13,8 @@ import java.awt.GraphicsEnvironment;
 @SpringBootApplication
 public class App implements CommandLineRunner {
 
-    //@Autowired
-    //private SwingController swingController;
+    @Autowired
+    private SwingController swingController;
 
     @Autowired
     private DatabaseConnection databaseConnection;
@@ -28,7 +29,7 @@ public class App implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (!GraphicsEnvironment.isHeadless()) {
             databaseConnection.connect();
-            //swingController.createAndShowGUI();
+            swingController.initializeUI();
         } else {
             System.out.println("Headless environment detected. Swing GUI will not be displayed.");
         }
