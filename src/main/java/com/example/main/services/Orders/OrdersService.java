@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.main.domain.models.Orders;
 import com.example.main.domain.models.Statuses;
-import com.example.main.domain.repositories.ItemsRepository;
 import com.example.main.domain.repositories.OrdersRepository;
 import com.example.main.domain.repositories.StatusesRepository;
 import com.example.main.error.CustomError;
@@ -20,9 +19,6 @@ public class OrdersService {
 
     @Autowired
     private final OrdersRepository ordersRepository;
-
-    @Autowired
-    private final ItemsRepository itemsRepository;
 
     @Autowired
     private final StatusesRepository statusesRepository;
@@ -37,11 +33,9 @@ public class OrdersService {
 
     public OrdersService(
         OrdersRepository ordersRepository,
-        ItemsRepository itemsRepository,
         StatusesRepository statusesRepository
     ) {
         this.ordersRepository = ordersRepository;
-        this.itemsRepository = itemsRepository;
         this.statusesRepository = statusesRepository;
     }
 

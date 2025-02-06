@@ -43,7 +43,7 @@ public class ServiceContainer {
     public UserService userService = new UserService(usersRepository, cartsRepository);
 
     @Autowired
-    public OrdersService ordersService = new OrdersService(ordersRepository, itemsRepository, statusesRepository);
+    public OrdersService ordersService = new OrdersService(ordersRepository, statusesRepository);
 
     @Autowired
     public ProductsService productsService = new ProductsService(productsRepository, categoriesRepository);
