@@ -7,6 +7,7 @@ import com.example.main.domain.models.Orders;
 
 public class OrderGetDTO {
     private long id;
+    private long userId;
     private List<Item> items;
     private String status;
 
@@ -59,8 +60,9 @@ public class OrderGetDTO {
     }
     private double total;
 
-    public OrderGetDTO(long id, List<Item> items, double total, String status) {
+    public OrderGetDTO(long id, long userId, List<Item> items, double total, String status) {
         this.id = id;
+        this.userId = userId;
         this.items = items;
         this.total = total;
         this.status = status;
@@ -72,6 +74,14 @@ public class OrderGetDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public List<Item> getItems() {
@@ -109,7 +119,7 @@ public class OrderGetDTO {
             return i;
         }).collect(Collectors.toList());
         double total = items.stream().mapToDouble(i -> i.getTotal()).sum();
-        return new OrderGetDTO(order.getId(), items, total, order.getStatus().getName());
+        return new OrderGetDTO(order.getId(), order.getUser().getId(), items, total, order.getStatus().getName());
     }
 
 }
