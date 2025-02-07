@@ -80,11 +80,11 @@ public class Orders {
         this.id = id;
     }
 
-    public Double getTotalPrice() {
+    public Double getTotal() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Double totalPrice) {
+    public void setTotal(Double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
