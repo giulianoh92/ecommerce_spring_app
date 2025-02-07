@@ -119,19 +119,19 @@ public class MainController {
     }
 
     public void updateOrderStatus(long orderId, String status) {
-        serviceContainer.ordersService.updateOrderStatus(orderId, status);
+        serviceContainer.ordersService.updateStatus(orderId, status);
     }
 
     public List<OrderGetDTO> getAllOrders() {
-        return serviceContainer.ordersService.getAllOrders();
+        return serviceContainer.ordersService.getAll();
     }
 
     public OrderGetDTO getOrderById(long id) {
-        return serviceContainer.ordersService.getOrderById(id);
+        return serviceContainer.ordersService.getById(id);
     }
 
     public List<OrderGetDTO> getOrdersByUserId(long userId) {
-        return serviceContainer.ordersService.getOrdersByUserId(userId);
+        return serviceContainer.ordersService.getByUserId(userId);
     }
 
     public void populateDatabaseWithSampleData() {
