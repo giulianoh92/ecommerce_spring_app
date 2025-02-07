@@ -39,7 +39,7 @@ public class OrdersService {
         this.statusesRepository = statusesRepository;
     }
 
-    public List<OrderGetDTO> getAllOrders() {
+    public List<OrderGetDTO> getAll() {
         List<Orders> orders = ordersRepository.findAll();
         if (orders.isEmpty()) {
             throw new CustomError(4004, "No hay pedidos registrados");
@@ -47,7 +47,15 @@ public class OrdersService {
         return orders.stream().map(order -> OrderGetDTO.mapToDto(order)).collect(Collectors.toList());
     }
 
-    public OrderGetDTO getOrderById(long id) {
+    public List<Orders> getAllEntity() {
+        List<Orders> orders = ordersRepository.findAll();
+        if (orders.isEmpty()) {
+            throw new CustomError(4004, "No hay pedidos registrados");
+        }
+        return orders;
+    }
+
+    public OrderGetDTO getById(long id) {
         return OrderGetDTO.mapToDto(ordersRepository.findById(id).
         orElseThrow(
             () -> new CustomError(
@@ -57,7 +65,7 @@ public class OrdersService {
         ));
     }
 
-    public List<OrderGetDTO> getOrdersByUserId(long userId) {
+    public List<OrderGetDTO> getByUserId(long userId) {
         List<Orders> orders = ordersRepository.findByUserId(userId);
         if (orders.isEmpty()) {
             throw new CustomError(4004, "No hay pedidos registrados");
@@ -65,7 +73,7 @@ public class OrdersService {
         return orders.stream().map(order -> OrderGetDTO.mapToDto(order)).collect(Collectors.toList());
     }
 
-    public void updateOrderStatus(long orderId, String statusKey) {
+    public void updateStatus(long orderId, String statusKey) {
         String statusName = statusMap.get(statusKey);
         if (statusName == null) {
             throw new CustomError(4004, "Estado no válido");

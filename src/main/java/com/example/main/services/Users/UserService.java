@@ -42,6 +42,14 @@ public class UserService {
         return users.stream().map(user -> UserGetDTO.mapToDto(user)).collect(Collectors.toList());
     }
 
+    public List<Users> getAllEntity() {
+        List<Users> users = usersRepository.findAll();
+        if (users.isEmpty()) {
+            throw new CustomError(4004, "No hay usuarios registrados");
+        }
+        return users;
+    }
+
     public UserGetDTO getById(long id) {
         return UserGetDTO.mapToDto(usersRepository.findById(id).
         orElseThrow(

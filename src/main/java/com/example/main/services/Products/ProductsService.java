@@ -46,6 +46,15 @@ public class ProductsService {
             .collect(Collectors.toList());
     }
 
+    public List<Products> getAllEntity() {
+        List<Products> products = productsRepository.findAll();
+        if (products.isEmpty()) {
+            throw new CustomError(4004, "No hay productos registrados");
+        }
+
+        return products;
+    }
+
     public ProductGetDTO getById(long id) {
         return ProductGetDTO.mapToDto(productsRepository.findById(id).
         orElseThrow(
