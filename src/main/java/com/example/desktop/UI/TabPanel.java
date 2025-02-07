@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.Consumer;
 import com.example.main.error.CustomError;
 
 public class TabPanel<T> extends JPanel {
@@ -39,6 +38,25 @@ public class TabPanel<T> extends JPanel {
         setLayout(new BorderLayout());
 
         JTable table = new JTable(model);
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = table.getSelectedRow();
+                    if (row != -1) {
+                        Object[] rowData = new Object[model.getColumnCount()];
+                        for (int i = 0; i < model.getColumnCount(); i++) {
+                            rowData[i] = model.getValueAt(row, i);
+                        }
+                        new EditWindow(SwingUtilities.getWindowAncestor(TabPanel.this), columnNames, rowData, () -> {
+                            for (int i = 0; i < model.getColumnCount(); i++) {
+                                model.setValueAt(rowData[i], row, i);
+                            }
+                        }).setVisible(true);
+                    }
+                }
+            }
+        });
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
