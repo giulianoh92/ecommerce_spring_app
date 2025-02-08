@@ -12,23 +12,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import com.example.main.error.CustomError;
 
 public class TabPanel<T> extends JPanel {
 
     private Supplier<List<T>> dataSupplier;
-    private String[] columnNames;
-    private Function<T, Object[]> rowMapper;
     private DefaultTableModel model;
+    private List<T> data;
 
-    public TabPanel(Supplier<List<T>> dataSupplier, String[] columnNames, Function<T, Object[]> rowMapper) {
+    public TabPanel(Supplier<List<T>> dataSupplier) {
         this.dataSupplier = dataSupplier;
-        this.columnNames = columnNames;
-        this.rowMapper = rowMapper;
-        this.model = new DefaultTableModel(columnNames, 0) {
+        this.model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // All cells are not editable
@@ -44,14 +41,9 @@ public class TabPanel<T> extends JPanel {
                 if (e.getClickCount() == 2) {
                     int row = table.getSelectedRow();
                     if (row != -1) {
-                        Object[] rowData = new Object[model.getColumnCount()];
-                        for (int i = 0; i < model.getColumnCount(); i++) {
-                            rowData[i] = model.getValueAt(row, i);
-                        }
-                        new EditWindow(SwingUtilities.getWindowAncestor(TabPanel.this), columnNames, rowData, () -> {
-                            for (int i = 0; i < model.getColumnCount(); i++) {
-                                model.setValueAt(rowData[i], row, i);
-                            }
+                        T selectedItem = data.get(row);
+                        new EditWindow<>(SwingUtilities.getWindowAncestor(TabPanel.this), selectedItem, () -> {
+                            refreshTable();
                         }).setVisible(true);
                     }
                 }
@@ -77,9 +69,24 @@ public class TabPanel<T> extends JPanel {
         model.setRowCount(0); // Clear existing data
 
         try {
-            List<T> data = dataSupplier.get();
-            for (T item : data) {
-                model.addRow(rowMapper.apply(item));
+            data = dataSupplier.get();
+            if (!data.isEmpty()) {
+                T firstItem = data.get(0);
+                Field[] fields = firstItem.getClass().getDeclaredFields();
+                String[] columnNames = new String[fields.length];
+                for (int i = 0; i < fields.length; i++) {
+                    fields[i].setAccessible(true);
+                    columnNames[i] = fields[i].getName();
+                }
+                model.setColumnIdentifiers(columnNames);
+
+                for (T item : data) {
+                    Object[] rowData = new Object[fields.length];
+                    for (int i = 0; i < fields.length; i++) {
+                        rowData[i] = fields[i].get(item);
+                    }
+                    model.addRow(rowData);
+                }
             }
         } catch (CustomError e) {
             if (e.getCode() != 4004) { // If the error is not a 404, show the error message

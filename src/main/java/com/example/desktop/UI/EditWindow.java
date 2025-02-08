@@ -4,30 +4,37 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 
-public class EditWindow extends JDialog {
+public class EditWindow<T> extends JDialog {
 
     private JTextField[] textFields;
     private JButton cancelButton;
     private JButton saveButton;
-    private Object[] rowData;
+    private T item;
     private Runnable onSave;
 
-    public EditWindow(Window owner, String[] columnNames, Object[] rowData, Runnable onSave) {
+    public EditWindow(Window owner, T item, Runnable onSave) {
         super(owner, "Editar Fila", ModalityType.APPLICATION_MODAL);
-        this.rowData = rowData;
+        this.item = item;
         this.onSave = onSave;
 
         setLayout(new BorderLayout());
 
-        JPanel inputPanel = new JPanel(new GridLayout(columnNames.length, 2));
-        textFields = new JTextField[columnNames.length];
+        Field[] fields = item.getClass().getDeclaredFields();
+        JPanel inputPanel = new JPanel(new GridLayout(fields.length, 2));
+        textFields = new JTextField[fields.length];
 
-        for (int i = 0; i < columnNames.length; i++) {
-            inputPanel.add(new JLabel(columnNames[i]));
-            textFields[i] = new JTextField(rowData[i].toString());
-            if (columnNames[i].toLowerCase().contains("id") || columnNames[i].toLowerCase().contains("email")) {
-                textFields[i].setEditable(false);
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            inputPanel.add(new JLabel(fields[i].getName()));
+            try {
+                textFields[i] = new JTextField(fields[i].get(item).toString());
+                if (fields[i].getName().toLowerCase().contains("id") || fields[i].getName().toLowerCase().contains("email")) {
+                    textFields[i].setEditable(false);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
             inputPanel.add(textFields[i]);
         }
@@ -48,8 +55,12 @@ public class EditWindow extends JDialog {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < textFields.length; i++) {
-                    rowData[i] = textFields[i].getText();
+                try {
+                    for (int i = 0; i < fields.length; i++) {
+                        fields[i].set(item, textFields[i].getText());
+                    }
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
                 }
                 onSave.run();
                 dispose();

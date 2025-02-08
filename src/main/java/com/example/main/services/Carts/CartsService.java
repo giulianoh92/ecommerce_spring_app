@@ -160,7 +160,7 @@ public class CartsService {
         );
         Statuses status = statusesRepository.findByName("Pendiente").orElseGet(() -> statusesRepository.save(new Statuses("Pendiente")));
         Orders order = new Orders();
-        order.setTotalPrice(cart.getTotal());
+        order.setTotal(cart.getTotal());
         order.setUser(cart.getUser());
         order.setStatus(status);
     
