@@ -42,9 +42,7 @@ public class TabPanel<T> extends JPanel {
                     int row = table.getSelectedRow();
                     if (row != -1) {
                         T selectedItem = data.get(row);
-                        new EditWindow<>(SwingUtilities.getWindowAncestor(TabPanel.this), selectedItem, () -> {
-                            refreshTable();
-                        }).setVisible(true);
+                        new EditWindow<>(SwingUtilities.getWindowAncestor(TabPanel.this), selectedItem, null, model, row).setVisible(true);
                     }
                 }
             }
@@ -67,7 +65,7 @@ public class TabPanel<T> extends JPanel {
 
     private void refreshTable() {
         model.setRowCount(0); // Clear existing data
-
+    
         try {
             data = dataSupplier.get();
             if (!data.isEmpty()) {
@@ -76,14 +74,22 @@ public class TabPanel<T> extends JPanel {
                 String[] columnNames = new String[fields.length];
                 for (int i = 0; i < fields.length; i++) {
                     fields[i].setAccessible(true);
-                    columnNames[i] = fields[i].getName();
+                    if (!List.class.isAssignableFrom(fields[i].getType())) {
+                        columnNames[i] = fields[i].getName();
+                    } else {
+                        columnNames[i] = null; // Mark columns with lists as null
+                    }
                 }
                 model.setColumnIdentifiers(columnNames);
-
+    
                 for (T item : data) {
                     Object[] rowData = new Object[fields.length];
                     for (int i = 0; i < fields.length; i++) {
-                        rowData[i] = fields[i].get(item);
+                        if (columnNames[i] != null) {
+                            rowData[i] = fields[i].get(item);
+                        } else {
+                            rowData[i] = "Ver detalles";
+                        }
                     }
                     model.addRow(rowData);
                 }
