@@ -6,12 +6,12 @@ import com.example.desktop.UI.AdminPanel;
 import com.example.desktop.UI.ClientTableModel;
 import com.example.desktop.UI.OrderTableModel;
 import com.example.desktop.UI.ProductTableModel;
+import com.example.desktop.UI.TabWithTable;
 import com.example.main.services.ServiceContainer;
 import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Products.dto.ProductGetDTO;
 import com.example.main.services.Users.dto.UserGetDTO;
 
-import javax.swing.*;
 import java.util.List;
 
 @Component
@@ -28,14 +28,17 @@ public class SwingController {
         List<UserGetDTO> users = serviceContainer.userService.getAll();
         List<OrderGetDTO> orders = serviceContainer.ordersService.getAll();
 
-        // Crear tablas con los datos obtenidos
-        JTable productsTable = new JTable(new ProductTableModel(products));
-        JTable usersTable = new JTable(new ClientTableModel(users));
-        JTable ordersTable = new JTable(new OrderTableModel(orders));
+        // Crear paneles con tablas
+        TabWithTable<ProductGetDTO> productsTab = new TabWithTable<>(new ProductTableModel());
+        productsTab.setData(products);
+        TabWithTable<UserGetDTO> usersTab = new TabWithTable<>(new ClientTableModel());
+        usersTab.setData(users);
+        TabWithTable<OrderGetDTO> ordersTab = new TabWithTable<>(new OrderTableModel());
+        ordersTab.setData(orders);
 
-        // Añadir tablas a los paneles correspondientes
-        adminPanel.getProductsPanel().add(new JScrollPane(productsTable));
-        adminPanel.getUsersPanel().add(new JScrollPane(usersTable));
-        adminPanel.getOrdersPanel().add(new JScrollPane(ordersTable));
+        // Añadir paneles a los paneles correspondientes
+        adminPanel.getProductsPanel().add(productsTab);
+        adminPanel.getUsersPanel().add(usersTab);
+        adminPanel.getOrdersPanel().add(ordersTab);
     }
 }

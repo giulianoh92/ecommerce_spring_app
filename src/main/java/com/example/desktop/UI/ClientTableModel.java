@@ -1,34 +1,18 @@
-
 package com.example.desktop.UI;
-
-import javax.swing.table.AbstractTableModel;
 
 import com.example.main.services.Users.dto.UserGetDTO;
 
-import java.util.List;
+public class ClientTableModel extends GenericTableModel<UserGetDTO> {
 
-public class ClientTableModel extends AbstractTableModel {
+    private static final String[] COLUMN_NAMES = {"ID", "Nombre", "Apellido", "Email", "Dirección", "Teléfono"};
 
-    private List<UserGetDTO> clients;
-    private final String[] columnNames = {"ID", "Nombre", "Apellido", "Email", "Dirección", "Teléfono"};
-
-    public ClientTableModel(List<UserGetDTO> clients) {
-        this.clients = clients;
-    }
-
-    @Override
-    public int getRowCount() {
-        return clients.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
+    public ClientTableModel() {
+        super(COLUMN_NAMES);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        UserGetDTO client = clients.get(rowIndex);
+        UserGetDTO client = getDataAt(rowIndex);
         switch (columnIndex) {
             case 0:
                 return client.getId();
@@ -45,18 +29,5 @@ public class ClientTableModel extends AbstractTableModel {
             default:
                 return null;
         }
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-
-    public List<UserGetDTO> getClients() {
-        return clients;
-    }
-
-    public void setClients(List<UserGetDTO> clients) {
-        this.clients = clients;
     }
 }

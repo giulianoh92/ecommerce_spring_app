@@ -1,57 +1,29 @@
 package com.example.desktop.UI;
 
-import java.util.List;
-
-import javax.swing.table.AbstractTableModel;
-
 import com.example.main.services.Orders.dto.OrderGetDTO;
 
-public class OrderTableModel extends AbstractTableModel  {
+public class OrderTableModel extends GenericTableModel<OrderGetDTO> {
 
-    private List<OrderGetDTO> products;
-    private final String[] columnNames = {"ID", "ID del cliente", "Estado", "Total"};
+    private static final String[] COLUMN_NAMES = {"ID", "ID del cliente", "Estado", "Total"};
 
-    public OrderTableModel(List<OrderGetDTO> products) {
-        this.products = products;
-    }
-
-    @Override
-    public int getRowCount() {
-        return products.size();
-    }
-
-    @Override
-    public int getColumnCount() {
-        return columnNames.length;
+    public OrderTableModel() {
+        super(COLUMN_NAMES);
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        OrderGetDTO product = products.get(rowIndex);
+        OrderGetDTO order = getDataAt(rowIndex);
         switch (columnIndex) {
             case 0:
-                return product.getId();
+                return order.getId();
             case 1:
-                return product.getUserId();
+                return order.getUserId();
             case 2:
-                return product.getStatus();
+                return order.getStatus();
             case 3:
-                return product.getTotal();
+                return order.getTotal();
             default:
                 return null;
         }
-    }
-
-    @Override
-    public String getColumnName(int column) {
-        return columnNames[column];
-    }
-
-    public List<OrderGetDTO> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<OrderGetDTO> products) {
-        this.products = products;
     }
 }
