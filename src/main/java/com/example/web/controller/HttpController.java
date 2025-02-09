@@ -205,4 +205,10 @@ public class HttpController {
         return new ResponseEntity<>("Base de datos poblada con productos", HttpStatus.OK);
     }
 
+    @GetMapping("/users/orders/statuses/populate")
+    public ResponseEntity<Object> populateDatabaseWithStatuses() {
+        mainController.populateDatabaseWithStatuses();
+        return new ResponseEntity<>("Base de datos poblada con estados", HttpStatus.OK);
+    }
+
 }

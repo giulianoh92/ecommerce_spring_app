@@ -137,4 +137,8 @@ public class MainController {
     public void populateDatabaseWithSampleData() {
         serviceContainer.productsService.populateDatabaseWithProducts();
     }
+
+    public void populateDatabaseWithStatuses() {
+        serviceContainer.ordersService.createStandardStatuses();
+    }
 }
