@@ -16,6 +16,8 @@ public class ProductUpdateDTO {
 
     private Long categoryId;
 
+    private boolean active;
+
     public ProductUpdateDTO() {
     }
 
@@ -74,5 +76,13 @@ public class ProductUpdateDTO {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

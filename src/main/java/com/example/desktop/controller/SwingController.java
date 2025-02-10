@@ -72,10 +72,15 @@ public class SwingController {
         refreshProductsButton.addActionListener(e -> refreshProductsTab(productsTab));
         JButton addProductButton = new JButton("Agregar Producto");
         addProductButton.addActionListener(e -> openAddProductDialog(productsTab));
+        JButton deleteProductButton = new JButton("Eliminar Producto");
+        deleteProductButton.addActionListener(e -> deleteSelectedProduct(productsTab));
+    
+
         JPanel productsPanel = new JPanel(new BorderLayout());
         JPanel productsButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         productsButtonPanel.add(refreshProductsButton);
         productsButtonPanel.add(addProductButton);
+        productsButtonPanel.add(deleteProductButton);
         productsPanel.add(productsButtonPanel, BorderLayout.NORTH);
         productsPanel.add(new JScrollPane(productsTab.getTable()), BorderLayout.CENTER);
     
@@ -93,6 +98,27 @@ public class SwingController {
         frame.setVisible(true);
     
         refreshTabs(usersTab, productsTab, ordersTab);
+    }
+
+    private void deleteSelectedProduct(EntityTab<ProductGetDTO> productsTab) {
+        JTable table = productsTab.getTable();
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            Long productId = (Long) table.getValueAt(selectedRow, 0);
+            int confirm = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que deseas eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    serviceContainer.productsService.delete(productId);
+                    refreshProductsTab(productsTab);
+                } catch (CustomError e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Ocurrió un error al eliminar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, selecciona un producto para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private MouseAdapter createOrderMouseListener(EntityTab<OrderGetDTO> ordersTab) {
@@ -169,6 +195,9 @@ public class SwingController {
         dialog.setVisible(true);
         if (dialog.isConfirmed()) {
             ProductCreateDTO dto = dialog.getProductCreateDTO();
+            if (dto == null) {
+                return; // Si dto es null, significa que hubo un error de entrada y ya se mostró un mensaje de error
+            }
             Set<ConstraintViolation<ProductCreateDTO>> violations = dialog.validateDTO(dto);
             if (!violations.isEmpty()) {
                 showValidationErrors(violations);
@@ -179,10 +208,8 @@ public class SwingController {
                 refreshProductsTab(productsTab);
             } catch (CustomError e) {
                 JOptionPane.showMessageDialog(dialog, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(dialog, "Por favor ingrese numeros validos para el precio y el stock.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(dialog, "Ocurrio un error al agregar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Ocurrió un error al agregar el producto.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

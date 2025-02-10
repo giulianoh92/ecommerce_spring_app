@@ -30,8 +30,8 @@ public class MainController {
 
     MainController(ServiceContainer serviceContainer) {
         this.serviceContainer = serviceContainer;
-        populateDatabaseWithSampleData();
-        populateDatabaseWithStatuses();
+        //populateDatabaseWithSampleData();
+        //populateDatabaseWithStatuses();
     }
 
     public List<UserGetDTO> getAllUsers() {

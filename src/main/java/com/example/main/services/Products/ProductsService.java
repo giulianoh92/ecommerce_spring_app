@@ -41,6 +41,7 @@ public class ProductsService {
         }
 
         return products.stream()
+            .filter(product -> product.isActive())
             .sorted((p1, p2) -> Long.compare(p1.getId(), p2.getId()))
             .map(product -> ProductGetDTO.mapToDto(product))
             .collect(Collectors.toList());
@@ -53,7 +54,7 @@ public class ProductsService {
         }
 
         return products.stream()
-            .filter(product -> product.getStock() > 0)
+            .filter(product -> product.isActive() && product.getStock() > 0)
             .sorted((p1, p2) -> Long.compare(p1.getId(), p2.getId()))
             .map(product -> ProductGetDTO.mapToDto(product))
             .collect(Collectors.toList());
@@ -140,7 +141,8 @@ public class ProductsService {
                 "Producto no encontrado"
             )
         );
-        productsRepository.delete(product);
+        product.setActive(false);
+        productsRepository.save(product);
     }
 
     public List<Categories> getAllCategories() {

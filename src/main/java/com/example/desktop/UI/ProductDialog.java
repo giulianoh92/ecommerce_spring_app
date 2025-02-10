@@ -88,15 +88,20 @@ public class ProductDialog extends JDialog {
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(null);
-
-        return new ProductCreateDTO(
-                nameField.getText(),
-                descriptionField.getText(),
-                Double.parseDouble(priceField.getText()),
-                Integer.parseInt(stockField.getText()),
-                null,
-                categoryId
-        );
+    
+        try {
+            return new ProductCreateDTO(
+                    nameField.getText(),
+                    descriptionField.getText(),
+                    Double.parseDouble(priceField.getText()),
+                    Integer.parseInt(stockField.getText()),
+                    null,
+                    categoryId
+            );
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor ingrese números válidos para el precio y el stock.", "Error de entrada", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
     public ProductUpdateDTO getProductUpdateDTO() {
