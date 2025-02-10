@@ -1,3 +1,4 @@
+// filepath: /home/giu/dev/javaCode/ecommerce-spring-api/spring-api/src/main/java/com/example/main/services/Users/UserService.java
 package com.example.main.services.Users;
 
 import java.util.ArrayList;
@@ -136,7 +137,7 @@ public class UserService implements UserDetailsService {
             userModel.setActive(true);
             usersRepository.save(userModel);
         }
-        return jwtUtil.generateToken(userModel.getEmail());
+        return jwtUtil.generateToken(userModel.getEmail(), userModel.getId());
     }
 
     @Override

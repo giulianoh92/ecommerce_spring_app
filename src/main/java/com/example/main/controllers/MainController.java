@@ -28,6 +28,12 @@ public class MainController {
     @Autowired
     private ServiceContainer serviceContainer;
 
+    MainController(ServiceContainer serviceContainer) {
+        this.serviceContainer = serviceContainer;
+        populateDatabaseWithSampleData();
+        populateDatabaseWithStatuses();
+    }
+
     public List<UserGetDTO> getAllUsers() {
         return serviceContainer.userService.getAll();
     }
@@ -54,6 +60,10 @@ public class MainController {
 
     public List<ProductGetDTO> getAllProducts() {
         return serviceContainer.productsService.getAll();
+    }
+
+    public List<ProductGetDTO> getAllProductsForShop() {
+        return serviceContainer.productsService.getAllForShop();
     }
 
     public ProductGetDTO getProductById(long id) {

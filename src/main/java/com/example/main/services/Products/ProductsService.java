@@ -46,6 +46,19 @@ public class ProductsService {
             .collect(Collectors.toList());
     }
 
+    public List<ProductGetDTO> getAllForShop() {
+        List<Products> products = productsRepository.findAll();
+        if (products.isEmpty()) {
+            throw new CustomError(4004, "No hay productos registrados");
+        }
+
+        return products.stream()
+            .filter(product -> product.getStock() > 0)
+            .sorted((p1, p2) -> Long.compare(p1.getId(), p2.getId()))
+            .map(product -> ProductGetDTO.mapToDto(product))
+            .collect(Collectors.toList());
+    }
+
     public List<Products> getAllEntity() {
         List<Products> products = productsRepository.findAll();
         if (products.isEmpty()) {

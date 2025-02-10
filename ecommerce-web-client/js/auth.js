@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
             email: formData.get('email'),
             password: formData.get('password')
         };
-
+    
         try {
             const response = await fetch(`${apiUrl}/users/login`, {
                 method: 'POST',
@@ -54,12 +54,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: JSON.stringify(loginData)
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.detail || 'Login failed');
             }
-
+    
             const token = await response.text(); // Read response as text
             localStorage.setItem('token', token); // Store JWT token
             window.location.href = 'home.html'; // Redirect to home page

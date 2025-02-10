@@ -77,7 +77,7 @@ public class HttpController {
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductGetDTO>> getAllProducts() {
-        List<ProductGetDTO> products = mainController.getAllProducts();
+        List<ProductGetDTO> products = mainController.getAllProductsForShop();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
