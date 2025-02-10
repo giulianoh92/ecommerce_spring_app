@@ -17,19 +17,19 @@ public class OrderDialog extends JDialog {
     public OrderDialog(OrderGetDTO order, Map<Long, String> statuses) {
         this.statuses = statuses;
         statuses.forEach((id, status) -> System.out.println(id + " " + status));
-        setTitle("Edit Order Status");
+        setTitle("Cambiar estado del pedido");
         setModal(true);
         setSize(400, 200);
         setLayout(new GridLayout(3, 2));
 
-        add(new JLabel("Status:"));
+        add(new JLabel("Estado:"));
         statusComboBox = new JComboBox<>(statuses.values().toArray(new String[0]));
         if (order != null) {
             statusComboBox.setSelectedItem(order.getStatus());
         }
         add(statusComboBox);
 
-        JButton confirmButton = new JButton("Confirm");
+        JButton confirmButton = new JButton("Confirmar");
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -39,7 +39,7 @@ public class OrderDialog extends JDialog {
         });
         add(confirmButton);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancelar");
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

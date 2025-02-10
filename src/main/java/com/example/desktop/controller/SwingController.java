@@ -26,7 +26,10 @@ import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import jakarta.validation.ConstraintViolation;
 
 @Component
 public class SwingController {
@@ -157,6 +160,11 @@ public class SwingController {
         dialog.setVisible(true);
         if (dialog.isConfirmed()) {
             ProductCreateDTO dto = dialog.getProductCreateDTO();
+            Set<ConstraintViolation<ProductCreateDTO>> violations = dialog.validateDTO(dto);
+            if (!violations.isEmpty()) {
+                showValidationErrors(violations);
+                return;
+            }
             try {
                 serviceContainer.productsService.create(dto);
                 refreshProductsTab(productsTab);
@@ -176,8 +184,13 @@ public class SwingController {
         ProductDialog dialog = new ProductDialog(product, categories);
         dialog.setVisible(true);
         if (dialog.isConfirmed()) {
+            ProductUpdateDTO dto = dialog.getProductUpdateDTO();
+            Set<ConstraintViolation<ProductUpdateDTO>> violations = dialog.validateDTO(dto);
+            if (!violations.isEmpty()) {
+                showValidationErrors(violations);
+                return;
+            }
             try {
-                ProductUpdateDTO dto = dialog.getProductUpdateDTO();
                 serviceContainer.productsService.update(product.getId(), dto);
                 refreshProductsTab(productsTab);
             } catch (CustomError e) {
@@ -221,6 +234,13 @@ public class SwingController {
         }
     }
 
+    private void showValidationErrors(Set<? extends ConstraintViolation<?>> violations) {
+        StringBuilder errorMessage = new StringBuilder("Errores de validación:\n");
+        for (ConstraintViolation<?> violation : violations) {
+            errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
+        }
+        JOptionPane.showMessageDialog(null, errorMessage.toString(), "Errores de validación", JOptionPane.ERROR_MESSAGE);
+    }
 
     private Map<Long, String> convertStatusesToMap(List<Statuses> statusesList) {
         return statusesList.stream()

@@ -9,6 +9,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
+import java.util.Set;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 public class ProductDialog extends JDialog {
     private JTextField nameField;
@@ -18,23 +23,26 @@ public class ProductDialog extends JDialog {
     private JComboBox<String> categoryComboBox;
     private Map<Long, String> categories;
     private boolean confirmed;
+    private Validator validator;
 
     public ProductDialog(ProductGetDTO product, Map<Long, String> categories) {
         this.categories = categories;
-        setTitle(product == null ? "Add Product" : "Edit Product");
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+        setTitle(product == null ? "Agregar Producto" : "Editar Producto");
         setModal(true);
         setSize(400, 300);
         setLayout(new GridLayout(6, 2));
 
-        add(new JLabel("Name:"));
+        add(new JLabel("Nombre:"));
         nameField = new JTextField(product != null ? product.getName() : "");
         add(nameField);
 
-        add(new JLabel("Description:"));
+        add(new JLabel("Descripción:"));
         descriptionField = new JTextField(product != null ? product.getDescription() : "");
         add(descriptionField);
 
-        add(new JLabel("Price:"));
+        add(new JLabel("Precio unitario:"));
         priceField = new JTextField(product != null ? String.valueOf(product.getUnitPrice()) : "");
         add(priceField);
 
@@ -42,14 +50,14 @@ public class ProductDialog extends JDialog {
         stockField = new JTextField(product != null ? String.valueOf(product.getStock()) : "");
         add(stockField);
 
-        add(new JLabel("Category:"));
+        add(new JLabel("Categoría:"));
         categoryComboBox = new JComboBox<>(categories.values().toArray(new String[0]));
         if (product != null) {
             categoryComboBox.setSelectedItem(product.getCategory());
         }
         add(categoryComboBox);
 
-        JButton confirmButton = new JButton("Confirm");
+        JButton confirmButton = new JButton("Confirmar");
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +67,7 @@ public class ProductDialog extends JDialog {
         });
         add(confirmButton);
 
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton("Cancelar");
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,5 +114,9 @@ public class ProductDialog extends JDialog {
                 null,
                 categoryId
         );
+    }
+
+    public <T> Set<ConstraintViolation<T>> validateDTO(T dto) {
+        return validator.validate(dto);
     }
 }
