@@ -97,7 +97,7 @@ public class CartGetDTO {
             i.setQuantity(item.getQuantity());
             i.setTotal(item.getProduct().getUnitPrice() * item.getQuantity());
             return i;
-        }).collect(Collectors.toList());
+        }).sorted((i1, i2) -> Long.compare(i1.getId(), i2.getId())).collect(Collectors.toList());
         double total = items.stream().mapToDouble(i -> i.getTotal()).sum();
         return new CartGetDTO(cart.getId(), items, total);
     }

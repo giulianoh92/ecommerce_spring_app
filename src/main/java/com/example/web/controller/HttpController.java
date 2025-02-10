@@ -21,6 +21,7 @@ import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
 import com.example.main.services.Carts.dto.CartGetDTO;
 import com.example.main.services.Carts.dto.CartItemDTO;
+import com.example.main.services.Carts.dto.RemoveItemRequestDTO;
 import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
@@ -148,8 +149,8 @@ public class HttpController {
     }
 
     @DeleteMapping("/users/cart/remove")
-    public ResponseEntity<Object> removeItemFromCart(@RequestBody long userId, long productId) {
-        mainController.removeItemFromCart(userId, productId);
+    public ResponseEntity<Object> removeItemFromCart(@RequestBody @Valid RemoveItemRequestDTO request) {
+        mainController.removeItemFromCart(request.getUserId(), request.getProductId());
         return new ResponseEntity<>("Producto eliminado del carrito con éxito", HttpStatus.OK);
     }
 

@@ -26,11 +26,19 @@ public class App implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (!GraphicsEnvironment.isHeadless()) {
+        boolean launchUI = false;
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("--ui")) {
+                launchUI = true;
+                break;
+            }
+        }
+
+        if (launchUI && !GraphicsEnvironment.isHeadless()) {
             databaseConnection.connect();
             swingController.initializeUI();
         } else {
-            System.out.println("Headless environment detected. Swing GUI will not be displayed.");
+            System.out.println("API is running. Swing GUI will not be displayed.");
         }
     }
 }

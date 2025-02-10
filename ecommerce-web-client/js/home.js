@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const apiUrl = 'http://localhost:8080'; // Ajusta la URL de la API según sea necesario
     const token = localStorage.getItem('token');
+    let products = []; // Variable global para almacenar los productos
 
     if (!token) {
         window.location.href = 'login.html'; // Redirige al login si no se encuentra el token
@@ -24,14 +25,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error('Error al obtener productos');
             }
 
-            const products = await response.json();
-
-            console.log('Productos:', products);
+            products = await response.json(); // Almacena los productos en la variable global
 
             displayProducts(products);
         } catch (error) {
             console.error('Error al obtener productos:', error);
-            alert('Error al obtener productos');
         }
     }
 
@@ -63,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('modalProductCategory').textContent = `Categoría: ${product.category}`;
         const quantityInput = document.getElementById('productQuantity');
         quantityInput.max = product.stock;
-        quantityInput.value = 0;
+        quantityInput.min = 1; // Establece el límite inferior a 1
+        quantityInput.value = 1; // Inicializa el valor en 1
         document.getElementById('addToCartButton').onclick = () => addToCart(product.id, quantityInput.value);
         modal.style.display = 'block';
     }
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Función para agregar producto al carrito
     async function addToCart(productId, quantity) {
         if (quantity <= 0) {
-            alert('La cantidad debe ser mayor que cero');
             return;
         }
 
@@ -93,11 +91,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error('Error al agregar producto al carrito');
             }
 
-            alert('Producto agregado al carrito');
             document.getElementById('productModal').style.display = 'none';
         } catch (error) {
             console.error('Error al agregar producto al carrito:', error);
-            alert('Error al agregar producto al carrito');
         }
     }
 
@@ -126,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function() {
             modal.style.display = 'block';
         } catch (error) {
             console.error('Error al obtener detalles del usuario:', error);
-            alert('Error al obtener detalles del usuario');
         }
     }
 
@@ -140,61 +135,136 @@ document.addEventListener("DOMContentLoaded", function() {
                     'Content-Type': 'application/json'
                 }
             });
-
+    
             if (!response.ok) {
                 throw new Error('Error al obtener detalles del carrito');
             }
-
+    
             const cart = await response.json();
-
+    
             const modal = document.getElementById('cartModal');
             const cartItemsContainer = document.getElementById('modalCartItems');
             cartItemsContainer.innerHTML = ''; // Limpia cualquier contenido existente
-
+    
             cart.items.forEach(item => {
                 const cartItem = document.createElement('div');
                 cartItem.className = 'cart-item';
                 cartItem.innerHTML = `
                     <p>${item.name} - Cantidad: ${item.quantity} - Precio Unitario: $${item.unitPrice} - Total: $${item.total}</p>
+                    <button class="decrement" data-id="${item.id}" data-quantity="${item.quantity}">-</button>
+                    <button class="increment" data-id="${item.id}" data-quantity="${item.quantity}">+</button>
+                    <button class="remove" data-id="${item.id}">Eliminar</button>
                 `;
                 cartItemsContainer.appendChild(cartItem);
             });
-
+    
             const cartTotal = document.createElement('div');
             cartTotal.className = 'cart-total';
             cartTotal.innerHTML = `<p>Total del Carrito: $${cart.total}</p>`;
             cartItemsContainer.appendChild(cartTotal);
-
+    
             document.getElementById('clearCartButton').onclick = () => clearCart(cart.id);
-            document.getElementById('checkoutButton').onclick = () => checkoutCart(cart.id);
-
+            document.getElementById('checkoutButton').onclick = () => {
+                if (cart.items.length === 0) {
+                    alert('El carrito está vacío. No puedes finalizar la compra.');
+                } else if (confirm('¿Estás seguro de que deseas finalizar la compra?')) {
+                    checkoutCart(cart.id);
+                }
+            };
+    
             modal.style.display = 'block';
+    
+            // Event listeners for increment, decrement, and remove buttons
+            document.querySelectorAll('.increment').forEach(button => {
+                button.addEventListener('click', () => {
+                    const productId = parseInt(button.dataset.id); // Asegúrate de que productId sea un número
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        const newQuantity = parseInt(button.dataset.quantity) + 1;
+                        if (newQuantity <= product.stock) {
+                            updateCartItemQuantity(productId, newQuantity);
+                            button.dataset.quantity = newQuantity; // Actualiza el atributo data-quantity
+                            if (newQuantity === product.stock) {
+                                button.disabled = true; // Deshabilita el botón si se alcanza el stock
+                            }
+                        }
+                    } else {
+                        console.error('Producto no encontrado:', productId);
+                    }
+                });
+            });
+    
+            document.querySelectorAll('.decrement').forEach(button => {
+                button.addEventListener('click', () => {
+                    const newQuantity = parseInt(button.dataset.quantity) - 1;
+                    if (newQuantity > 0) {
+                        updateCartItemQuantity(parseInt(button.dataset.id), newQuantity);
+                        button.dataset.quantity = newQuantity; // Actualiza el atributo data-quantity
+                        const incrementButton = button.nextElementSibling;
+                        incrementButton.disabled = false; // Habilita el botón de incremento
+                    } else {
+                        removeCartItem(parseInt(button.dataset.id));
+                    }
+                });
+            });
+    
+            document.querySelectorAll('.remove').forEach(button => {
+                button.addEventListener('click', () => removeCartItem(parseInt(button.dataset.id)));
+            });
+    
         } catch (error) {
             console.error('Error al obtener detalles del carrito:', error);
-            alert('Error al obtener detalles del carrito');
         }
     }
-
-    // Función para limpiar el carrito
-    async function clearCart(cartId) {
+    
+    // Función para actualizar la cantidad de un item en el carrito
+    async function updateCartItemQuantity(productId, quantity) {
         try {
-            const response = await fetch(`${apiUrl}/users/cart/clear/${cartId}`, {
+            const response = await fetch(`${apiUrl}/users/cart/update`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    productId: productId,
+                    quantity: quantity
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al actualizar la cantidad del item');
+            }
+    
+            showCartDetails(); // Refresh cart details
+        } catch (error) {
+            console.error('Error al actualizar la cantidad del item:', error);
+        }
+    }
+    
+    // Función para eliminar un item del carrito
+    async function removeCartItem(productId) {
+        try {
+            const response = await fetch(`${apiUrl}/users/cart/remove`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    productId: productId
+                })
             });
-
+    
             if (!response.ok) {
-                throw new Error('Error al limpiar el carrito');
+                throw new Error('Error al eliminar el item del carrito');
             }
-
-            alert('Carrito limpiado');
-            document.getElementById('cartModal').style.display = 'none';
+    
+            showCartDetails(); // Refresh cart details
         } catch (error) {
-            console.error('Error al limpiar el carrito:', error);
-            alert('Error al limpiar el carrito');
+            console.error('Error al eliminar el item del carrito:', error);
         }
     }
 
@@ -213,11 +283,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error('Error al finalizar la compra');
             }
 
-            alert('Compra finalizada');
             document.getElementById('cartModal').style.display = 'none';
         } catch (error) {
             console.error('Error al finalizar la compra:', error);
-            alert('Error al finalizar la compra');
         }
     }
 
@@ -233,7 +301,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
 
             if (response.status === 404) {
-                alert('¡Aún no has hecho ningún pedido!');
                 return;
             }
 
@@ -264,14 +331,33 @@ document.addEventListener("DOMContentLoaded", function() {
             modal.style.display = 'block';
         } catch (error) {
             console.error('Error al obtener detalles de los pedidos:', error);
-            alert('Error al obtener detalles de los pedidos');
+        }
+    }
+
+    // Función para limpiar el carrito
+    async function clearCart(cartId) {
+        try {
+            const response = await fetch(`${apiUrl}/users/cart/clear/${cartId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al limpiar el carrito');
+            }
+
+            document.getElementById('cartModal').style.display = 'none';
+        } catch (error) {
+            console.error('Error al limpiar el carrito:', error);
         }
     }
 
     // Función para obtener el ID del usuario desde el token JWT
     function getUserIdFromToken(token) {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('Token payload:', payload);
         return payload.userId;
     }
 
