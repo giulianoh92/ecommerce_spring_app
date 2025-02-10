@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Tienda</h1>
+        <nav>
+            <ul>
+                <li><a href="login.html" id="logout">Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="productGrid" class="grid-container"></div>
+    </main>
+    <footer>
+        <>&copy; 2025 Ecommerce Web Client</>
+    </footer>
+
+    <!-- Modal for product details -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalProductName"></h2>
+            <p id="modalProductDescription"></p>
+            <p id="modalProductPrice"></p>
+            <p id="modalProductStock"></p>
+            <p id="modalProductCategory"></p>
+        </div>
+    </div>
+
+    <script src="js/home.js"></script>
+</body>
+</html>
