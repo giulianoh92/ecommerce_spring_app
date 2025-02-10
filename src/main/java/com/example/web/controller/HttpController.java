@@ -21,6 +21,7 @@ import com.example.main.controllers.MainController;
 import com.example.main.domain.models.Categories;
 import com.example.main.services.Carts.dto.CartGetDTO;
 import com.example.main.services.Carts.dto.CartItemDTO;
+import com.example.main.services.Carts.dto.RemoveItemRequestDTO;
 import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Products.dto.CategoryCreateDTO;
 import com.example.main.services.Products.dto.ProductCreateDTO;
@@ -71,13 +72,13 @@ public class HttpController {
 
     @PostMapping("/users/login")
     public ResponseEntity<Object> login(@Valid @RequestBody UserLoginDTO user) {
-        mainController.login(user);
-        return new ResponseEntity<>("Usuario logueado con éxito", HttpStatus.OK);
+        String token = mainController.login(user);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductGetDTO>> getAllProducts() {
-        List<ProductGetDTO> products = mainController.getAllProducts();
+        List<ProductGetDTO> products = mainController.getAllProductsForShop();
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -148,8 +149,8 @@ public class HttpController {
     }
 
     @DeleteMapping("/users/cart/remove")
-    public ResponseEntity<Object> removeItemFromCart(@RequestBody long userId, long productId) {
-        mainController.removeItemFromCart(userId, productId);
+    public ResponseEntity<Object> removeItemFromCart(@RequestBody @Valid RemoveItemRequestDTO request) {
+        mainController.removeItemFromCart(request.getUserId(), request.getProductId());
         return new ResponseEntity<>("Producto eliminado del carrito con éxito", HttpStatus.OK);
     }
 
@@ -203,6 +204,12 @@ public class HttpController {
     public ResponseEntity<Object> populateDatabaseWithProducts() {
         mainController.populateDatabaseWithSampleData();
         return new ResponseEntity<>("Base de datos poblada con productos", HttpStatus.OK);
+    }
+
+    @GetMapping("/users/orders/statuses/populate")
+    public ResponseEntity<Object> populateDatabaseWithStatuses() {
+        mainController.populateDatabaseWithStatuses();
+        return new ResponseEntity<>("Base de datos poblada con estados", HttpStatus.OK);
     }
 
 }

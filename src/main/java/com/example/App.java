@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import com.example.desktop.controller.SwingController;
 import com.example.main.config.database.DatabaseConnection;
 
@@ -27,11 +26,19 @@ public class App implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (!GraphicsEnvironment.isHeadless()) {
+        boolean launchUI = false;
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("--ui")) {
+                launchUI = true;
+                break;
+            }
+        }
+
+        if (launchUI && !GraphicsEnvironment.isHeadless()) {
             databaseConnection.connect();
             swingController.initializeUI();
         } else {
-            System.out.println("Headless environment detected. Swing GUI will not be displayed.");
+            System.out.println("API is running. Swing GUI will not be displayed.");
         }
     }
 }

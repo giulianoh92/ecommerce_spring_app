@@ -158,6 +158,9 @@ public class CartsService {
         Carts cart = cartsRepository.findByUserId(userId).orElseThrow(
             () -> new CustomError(4004, "Carrito no encontrado")
         );
+        if (cart.getItems().isEmpty()) {
+            throw new CustomError(4001, "El carrito está vacío");
+        }
         Statuses status = statusesRepository.findByName("Pendiente").orElseGet(() -> statusesRepository.save(new Statuses("Pendiente")));
         Orders order = new Orders();
         order.setTotal(cart.getTotal());

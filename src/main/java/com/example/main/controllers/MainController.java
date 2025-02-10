@@ -28,6 +28,12 @@ public class MainController {
     @Autowired
     private ServiceContainer serviceContainer;
 
+    MainController(ServiceContainer serviceContainer) {
+        this.serviceContainer = serviceContainer;
+        //populateDatabaseWithSampleData();
+        //populateDatabaseWithStatuses();
+    }
+
     public List<UserGetDTO> getAllUsers() {
         return serviceContainer.userService.getAll();
     }
@@ -48,12 +54,16 @@ public class MainController {
         serviceContainer.userService.delete(id);
     }
 
-    public void login(UserLoginDTO user) {
-        serviceContainer.userService.login(user);
+    public String login(UserLoginDTO user) {
+        return serviceContainer.userService.login(user);
     }
 
     public List<ProductGetDTO> getAllProducts() {
         return serviceContainer.productsService.getAll();
+    }
+
+    public List<ProductGetDTO> getAllProductsForShop() {
+        return serviceContainer.productsService.getAllForShop();
     }
 
     public ProductGetDTO getProductById(long id) {
@@ -136,5 +146,9 @@ public class MainController {
 
     public void populateDatabaseWithSampleData() {
         serviceContainer.productsService.populateDatabaseWithProducts();
+    }
+
+    public void populateDatabaseWithStatuses() {
+        serviceContainer.ordersService.createStandardStatuses();
     }
 }

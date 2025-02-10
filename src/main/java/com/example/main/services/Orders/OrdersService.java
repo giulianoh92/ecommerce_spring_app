@@ -13,6 +13,7 @@ import com.example.main.domain.repositories.OrdersRepository;
 import com.example.main.domain.repositories.StatusesRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Orders.dto.OrderGetDTO;
+import com.example.main.services.Orders.dto.OrderUpdateDTO;
 
 @Service
 public class OrdersService {
@@ -88,5 +89,32 @@ public class OrdersService {
         );
         order.setStatus(status);
         ordersRepository.save(order);
+    }
+
+    public void update(Long id, OrderUpdateDTO orderUpdateDTO) {
+        Orders order = ordersRepository.findById(id).orElseThrow(
+            () -> new CustomError(4004, "Pedido no encontrado")
+        );
+        if (orderUpdateDTO.getStatusId() != null) {
+            Statuses status = statusesRepository.findById(orderUpdateDTO.getStatusId()).orElseThrow(
+                () -> new CustomError(4004, "Estado no encontrado")
+            );
+            order.setStatus(status);
+        }
+        ordersRepository.save(order);
+    }
+
+    public List<Statuses> getAllStatuses() {
+        return statusesRepository.findAll();
+    }
+
+    public void createStandardStatuses() {
+        for (String statusName : statusMap.values()) {
+            if (statusesRepository.findByName(statusName).isEmpty()) {
+                Statuses status = new Statuses();
+                status.setName(statusName);
+                statusesRepository.save(status);
+            }
+        }
     }
 }

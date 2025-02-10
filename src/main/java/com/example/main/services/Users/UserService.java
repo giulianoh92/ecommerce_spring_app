@@ -1,9 +1,15 @@
+// filepath: /home/giu/dev/javaCode/ecommerce-spring-api/spring-api/src/main/java/com/example/main/services/Users/UserService.java
 package com.example.main.services.Users;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.main.domain.models.Carts;
@@ -15,16 +21,21 @@ import com.example.main.services.Users.dto.UserCreateDTO;
 import com.example.main.services.Users.dto.UserGetDTO;
 import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
+import com.example.web.utils.JwtUtil;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private final UsersRepository usersRepository;
 
     @Autowired
     private final CartsRepository cartsRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public UserService(
         UsersRepository usersRepository,
@@ -117,7 +128,7 @@ public class UserService {
         usersRepository.save(userModel);
     }
 
-    public void login(UserLoginDTO user) {
+    public String login(UserLoginDTO user) {
         Users userModel = usersRepository.findByEmail(user.getEmail());
         if (userModel == null || !BCrypt.checkpw(user.getPassword(), userModel.getPassword())) {
             throw new CustomError(4004, "Usuario o contraseña incorrectos");
@@ -126,5 +137,15 @@ public class UserService {
             userModel.setActive(true);
             usersRepository.save(userModel);
         }
+        return jwtUtil.generateToken(userModel.getEmail(), userModel.getId());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user = usersRepository.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado");
+        }
+        return new User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 }

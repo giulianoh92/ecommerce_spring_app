@@ -27,6 +27,9 @@ public class Products {
     @Column(name = "image_url", nullable = true)
     private String imageUrl;
 
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Categories category;
@@ -107,5 +110,13 @@ public class Products {
 
     public void setCategory(Categories category) {
         this.category = category;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
