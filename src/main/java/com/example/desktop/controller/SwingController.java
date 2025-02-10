@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -63,22 +61,33 @@ public class SwingController {
         EntityTab<OrderGetDTO> ordersTab = new EntityTab<>(order -> new Object[]{order.getId(), order.getUserId(), order.getStatus(), order.getTotal()}, orderColumnNames, null);
         ordersTab.getTable().addMouseListener(createOrderMouseListener(ordersTab));
     
-        tabbedPane.add("Clientes", usersTab);
-        tabbedPane.add("Productos", productsTab);
-        tabbedPane.add("Pedidos", ordersTab);
+        // Add refresh buttons
+        JButton refreshUsersButton = new JButton("Actualizar");
+        refreshUsersButton.addActionListener(e -> refreshUsersTab(usersTab));
+        JPanel usersPanel = new JPanel(new BorderLayout());
+        usersPanel.add(refreshUsersButton, BorderLayout.NORTH);
+        usersPanel.add(new JScrollPane(usersTab.getTable()), BorderLayout.CENTER);
     
-        JPanel productPanel = new JPanel(new BorderLayout());
+        JButton refreshProductsButton = new JButton("Actualizar");
+        refreshProductsButton.addActionListener(e -> refreshProductsTab(productsTab));
         JButton addProductButton = new JButton("Agregar Producto");
-        addProductButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openAddProductDialog(productsTab);
-            }
-        });
-        productPanel.add(addProductButton, BorderLayout.NORTH);
-        productPanel.add(new JScrollPane(productsTab.getTable()), BorderLayout.CENTER);
+        addProductButton.addActionListener(e -> openAddProductDialog(productsTab));
+        JPanel productsPanel = new JPanel(new BorderLayout());
+        JPanel productsButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        productsButtonPanel.add(refreshProductsButton);
+        productsButtonPanel.add(addProductButton);
+        productsPanel.add(productsButtonPanel, BorderLayout.NORTH);
+        productsPanel.add(new JScrollPane(productsTab.getTable()), BorderLayout.CENTER);
     
-        tabbedPane.setComponentAt(1, productPanel);
+        JButton refreshOrdersButton = new JButton("Actualizar");
+        refreshOrdersButton.addActionListener(e -> refreshOrdersTab(ordersTab));
+        JPanel ordersPanel = new JPanel(new BorderLayout());
+        ordersPanel.add(refreshOrdersButton, BorderLayout.NORTH);
+        ordersPanel.add(new JScrollPane(ordersTab.getTable()), BorderLayout.CENTER);
+    
+        tabbedPane.add("Clientes", usersPanel);
+        tabbedPane.add("Productos", productsPanel);
+        tabbedPane.add("Pedidos", ordersPanel);
     
         frame.add(tabbedPane);
         frame.setVisible(true);

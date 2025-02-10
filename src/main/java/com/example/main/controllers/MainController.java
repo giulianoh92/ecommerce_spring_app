@@ -48,8 +48,8 @@ public class MainController {
         serviceContainer.userService.delete(id);
     }
 
-    public void login(UserLoginDTO user) {
-        serviceContainer.userService.login(user);
+    public String login(UserLoginDTO user) {
+        return serviceContainer.userService.login(user);
     }
 
     public List<ProductGetDTO> getAllProducts() {

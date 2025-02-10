@@ -71,8 +71,8 @@ public class HttpController {
 
     @PostMapping("/users/login")
     public ResponseEntity<Object> login(@Valid @RequestBody UserLoginDTO user) {
-        mainController.login(user);
-        return new ResponseEntity<>("Usuario logueado con éxito", HttpStatus.OK);
+        String token = mainController.login(user);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @GetMapping("/products")
