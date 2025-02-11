@@ -19,10 +19,25 @@
         </nav>
     </header>
     <main>
+        <div class="filters">
+            <input type="text" id="searchQuery" placeholder="Buscar productos...">
+            <select id="categoryFilter">
+                <option value="">Todas las categorías</option>
+                <!-- Opciones de categorías se llenarán dinámicamente -->
+            </select>
+            <input type="number" id="minPrice" placeholder="Precio mínimo">
+            <input type="number" id="maxPrice" placeholder="Precio máximo">
+            <button id="applyFilters">Aplicar filtros</button>
+        </div>
         <div id="productGrid" class="grid-container"></div>
+        <div class="pagination">
+            <button id="prevPage">Anterior</button>
+            <span id="pageInfo"></span>
+            <button id="nextPage">Siguiente</button>
+        </div>
     </main>
     <footer>
-        <>&copy; 2025 Ecommerce Web Client</>
+        &copy; 2025 Ecommerce Web Client
     </footer>
 
     <!-- Modal para detalles del producto -->

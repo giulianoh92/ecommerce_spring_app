@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.validation.Valid;
 
@@ -77,8 +78,19 @@ public class HttpController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductGetDTO>> getAllProducts() {
-        List<ProductGetDTO> products = mainController.getAllProductsForShop();
+    public ResponseEntity<List<ProductGetDTO>> getAllProducts(
+        @RequestParam int page,
+        @RequestParam int limit,
+        @RequestParam(required = false) String q,
+        @RequestParam(required = false) Long categoryId,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice,
+        @RequestParam(required = false) Boolean inStock,
+        @RequestParam(required = false) Boolean active,
+        @RequestParam(required = false, defaultValue = "id") String sortBy,
+        @RequestParam(required = false, defaultValue = "asc") String order
+    ) {
+        List<ProductGetDTO> products = mainController.getAllProducts(page, limit, q, categoryId, minPrice, maxPrice, inStock, active, sortBy, order);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

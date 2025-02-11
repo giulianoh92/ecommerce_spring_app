@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import com.example.main.domain.models.Categories;
 import com.example.main.domain.models.Products;
 import com.example.main.domain.repositories.CategoriesRepository;
@@ -34,16 +37,31 @@ public class ProductsService {
         this.categoriesRepository = categoriesRepository;
     }
 
-    public List<ProductGetDTO> getAll() {
-        List<Products> products = productsRepository.findAll();
-        if (products.isEmpty()) {
-            throw new CustomError(4004, "No hay productos registrados");
+    public List<ProductGetDTO> getAll(int page, int limit, String q, Long categoryId, Double minPrice, Double maxPrice, Boolean inStock, Boolean active, String sortBy, String order) {
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.fromString(order), sortBy));
+        Page<Products> productsPage;
+
+        if (categoryId != null) {
+            productsPage = productsRepository.findByNameContainingAndCategoryIdAndUnitPriceBetweenAndStockGreaterThanAndActiveTrue(
+                q != null ? q : "", 
+                categoryId, 
+                minPrice != null ? minPrice : 0.0, 
+                maxPrice != null ? maxPrice : Double.MAX_VALUE, 
+                inStock != null && inStock ? 0 : -1, 
+                pageable
+            );
+        } else {
+            productsPage = productsRepository.findByNameContainingAndUnitPriceBetweenAndStockGreaterThanAndActiveTrue(
+                q != null ? q : "", 
+                minPrice != null ? minPrice : 0.0, 
+                maxPrice != null ? maxPrice : Double.MAX_VALUE, 
+                inStock != null && inStock ? 0 : -1, 
+                pageable
+            );
         }
 
-        return products.stream()
-            .filter(product -> product.isActive())
-            .sorted((p1, p2) -> Long.compare(p1.getId(), p2.getId()))
-            .map(product -> ProductGetDTO.mapToDto(product))
+        return productsPage.getContent().stream()
+            .map(ProductGetDTO::mapToDto)
             .collect(Collectors.toList());
     }
 

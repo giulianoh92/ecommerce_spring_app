@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const apiUrl = 'http://localhost:8080'; // Ajusta la URL de la API según sea necesario
     const token = localStorage.getItem('token');
     let products = []; // Variable global para almacenar los productos
+    let currentPage = 1;
+    const itemsPerPage = 10;
 
     if (!token) {
         window.location.href = 'login.html'; // Redirige al login si no se encuentra el token
@@ -10,10 +12,44 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const userId = getUserIdFromToken(token);
 
-    // Función para obtener productos
-    async function fetchProducts() {
+    async function fetchCategories() {
         try {
-            const response = await fetch(`${apiUrl}/products`, {
+            const response = await fetch(`${apiUrl}/products/categories`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al obtener categorías');
+            }
+
+            const categories = await response.json();
+            const categoryFilter = document.getElementById('categoryFilter');
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categoryFilter.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error al obtener categorías:', error);
+        }
+    }
+
+    // Función para obtener productos con filtros y paginación
+    async function fetchProducts() {
+        const searchQuery = document.getElementById('searchQuery').value;
+        const categoryFilter = document.getElementById('categoryFilter').value;
+        const minPrice = document.getElementById('minPrice').value;
+        const maxPrice = document.getElementById('maxPrice').value;
+        const sortBy = 'name'; // Puedes cambiar esto según el criterio de ordenamiento deseado
+        const order = 'asc'; // Puedes cambiar esto a 'desc' para orden descendente
+
+        try {
+            const response = await fetch(`${apiUrl}/products?page=${currentPage}&limit=${itemsPerPage}&q=${searchQuery}&categoryId=${categoryFilter}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=true&active=true&sortBy=${sortBy}&order=${order}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -25,9 +61,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error('Error al obtener productos');
             }
 
-            products = await response.json(); // Almacena los productos en la variable global
-
+            const data = await response.json();
+            products = data; // Almacena los productos en la variable global
             displayProducts(products);
+            updatePagination(products.length);
         } catch (error) {
             console.error('Error al obtener productos:', error);
         }
@@ -37,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function displayProducts(products) {
         const productGrid = document.getElementById('productGrid');
         productGrid.innerHTML = ''; // Limpia cualquier contenido existente
-
+    
         products.forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
@@ -45,11 +82,37 @@ document.addEventListener("DOMContentLoaded", function() {
                 <h3>${product.name}</h3>
                 <p>${product.description}</p>
                 <p>Precio: $${product.unitPrice}</p>
+                <p>Categoría: ${product.category}</p>
             `;
             productCard.addEventListener('click', () => showProductDetails(product));
             productGrid.appendChild(productCard);
         });
     }
+
+    // Función para actualizar la paginación
+    function updatePagination(productsCount) {
+        document.getElementById('prevPage').disabled = currentPage === 1;
+        document.getElementById('nextPage').disabled = productsCount < itemsPerPage;
+    }
+
+    // Event listeners para los botones de paginación
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchProducts();
+        }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+        currentPage++;
+        fetchProducts();
+    });
+
+    // Event listener para el botón de aplicar filtros
+    document.getElementById('applyFilters').addEventListener('click', () => {
+        currentPage = 1; // Reinicia a la primera página al aplicar filtros
+        fetchProducts();
+    });
 
     // Función para mostrar detalles del producto en un modal
     function showProductDetails(product) {
@@ -58,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('modalProductDescription').textContent = product.description;
         document.getElementById('modalProductPrice').textContent = `Precio: $${product.unitPrice}`;
         document.getElementById('modalProductStock').textContent = `Stock: ${product.stock}`;
-        document.getElementById('modalProductCategory').textContent = `Categoría: ${product.category}`;
+        document.getElementById('modalProductCategory').textContent = `Categoría: ${product.category.name}`;
         const quantityInput = document.getElementById('productQuantity');
         quantityInput.max = product.stock;
         quantityInput.min = 1; // Establece el límite inferior a 1
@@ -379,6 +442,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Obtiene y muestra productos al cargar la página
     fetchProducts();
+    fetchCategories();
 
     // Listeners para los iconos de usuario, carrito y pedidos
     document.getElementById('userIcon').addEventListener('click', showUserDetails);

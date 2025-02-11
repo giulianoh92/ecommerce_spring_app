@@ -58,8 +58,8 @@ public class MainController {
         return serviceContainer.userService.login(user);
     }
 
-    public List<ProductGetDTO> getAllProducts() {
-        return serviceContainer.productsService.getAll();
+    public List<ProductGetDTO> getAllProducts(int page, int limit, String q, Long categoryId, Double minPrice, Double maxPrice, Boolean inStock, Boolean active, String sortBy, String order) {
+        return serviceContainer.productsService.getAll(page, limit, q, categoryId, minPrice, maxPrice, inStock, active, sortBy, order);
     }
 
     public List<ProductGetDTO> getAllProductsForShop() {

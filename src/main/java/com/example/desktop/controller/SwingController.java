@@ -39,6 +39,11 @@ public class SwingController {
     private List<OrderGetDTO> orders;
     private List<UserGetDTO> users;
 
+    private int currentPage = 1;
+    private final int pageSize = 10;
+
+    private JButton nextPageButton;
+
     public void initializeUI() {
         // Inicializar las listas
         products = Collections.emptyList();
@@ -74,13 +79,26 @@ public class SwingController {
         addProductButton.addActionListener(e -> openAddProductDialog(productsTab));
         JButton deleteProductButton = new JButton("Eliminar Producto");
         deleteProductButton.addActionListener(e -> deleteSelectedProduct(productsTab));
-    
+        JButton prevPageButton = new JButton("Anterior");
+        prevPageButton.addActionListener(e -> {
+            if (currentPage > 1) {
+                currentPage--;
+                refreshProductsTab(productsTab);
+            }
+        });
+        nextPageButton = new JButton("Siguiente");
+        nextPageButton.addActionListener(e -> {
+            currentPage++;
+            refreshProductsTab(productsTab);
+        });
 
         JPanel productsPanel = new JPanel(new BorderLayout());
         JPanel productsButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         productsButtonPanel.add(refreshProductsButton);
         productsButtonPanel.add(addProductButton);
         productsButtonPanel.add(deleteProductButton);
+        productsButtonPanel.add(prevPageButton);
+        productsButtonPanel.add(nextPageButton);
         productsPanel.add(productsButtonPanel, BorderLayout.NORTH);
         productsPanel.add(new JScrollPane(productsTab.getTable()), BorderLayout.CENTER);
     
@@ -250,12 +268,15 @@ public class SwingController {
 
     private void refreshProductsTab(EntityTab<ProductGetDTO> productsTab) {
         try {
-            products = serviceContainer.productsService.getAll();
+            products = serviceContainer.productsService.getAll(currentPage, pageSize, null, null, null, null, null, null, "id", "asc");
             productsTab.refresh(products);
+            nextPageButton.setEnabled(products.size() == pageSize);
         } catch (CustomError e) {
             productsTab.refresh(Collections.emptyList());
+            nextPageButton.setEnabled(false);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error al obtener los productos.", "Error", JOptionPane.ERROR_MESSAGE);
+            nextPageButton.setEnabled(false);
         }
     }
 
