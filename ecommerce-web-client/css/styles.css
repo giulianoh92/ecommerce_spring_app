@@ -129,9 +129,11 @@ input[type="submit"]:hover {
     text-decoration: underline;
 }
 
+/* ...existing code... */
+
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* 3 tarjetas por fila */
     gap: 20px;
     padding: 20px;
 }
@@ -144,6 +146,7 @@ input[type="submit"]:hover {
     background-color: var(--secondary-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    height: 400px; /* Aumenta la altura de la tarjeta */
 }
 
 .product-card:hover {
@@ -153,6 +156,15 @@ input[type="submit"]:hover {
 
 .product-card h3 {
     margin-top: 0;
+}
+
+/* Simulación de imagen del producto */
+.product-image {
+    width: 100%;
+    height: 200px; /* Altura de la imagen */
+    background-color: var(--border-color); /* Color de fondo para simular la imagen */
+    margin-bottom: 20px;
+    border-radius: 5px;
 }
 
 /* Modal styles */

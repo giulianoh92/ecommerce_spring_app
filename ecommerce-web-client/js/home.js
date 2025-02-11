@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem('token');
     let products = []; // Variable global para almacenar los productos
     let currentPage = 1;
-    const itemsPerPage = 24;
+    const itemsPerPage = 9;
 
     if (!token) {
         window.location.href = 'login.html'; // Redirige al login si no se encuentra el token
@@ -78,7 +78,12 @@ document.addEventListener("DOMContentLoaded", function() {
         products.forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
+    
+            // Genera un color pastel aleatorio
+            const pastelColor = `hsl(${Math.random() * 360}, 100%, 85%)`;
+    
             productCard.innerHTML = `
+                <div class="product-image" style="background-color: ${pastelColor};"></div> <!-- Simulación de imagen del producto -->
                 <h3>${product.name}</h3>
                 <p>${product.description}</p>
                 <p>Precio: $${product.unitPrice}</p>
