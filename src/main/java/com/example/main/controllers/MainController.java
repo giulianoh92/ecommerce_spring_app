@@ -31,7 +31,6 @@ public class MainController {
     MainController(ServiceContainer serviceContainer) {
         this.serviceContainer = serviceContainer;
         //populateDatabaseWithSampleData();
-        //populateDatabaseWithStatuses();
     }
 
     public List<UserGetDTO> getAllUsers() {
@@ -145,10 +144,8 @@ public class MainController {
     }
 
     public void populateDatabaseWithSampleData() {
+        serviceContainer.userService.populateDatabaseWithUsers();
         serviceContainer.productsService.populateDatabaseWithProducts();
-    }
-
-    public void populateDatabaseWithStatuses() {
         serviceContainer.ordersService.createStandardStatuses();
     }
 }

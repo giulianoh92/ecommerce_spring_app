@@ -22,6 +22,7 @@ public class App implements CommandLineRunner {
         // Set the headless property to false
         System.setProperty("java.awt.headless", "false");
         SpringApplication.run(App.class, args);
+        System.out.println("Swagger documentation available at: http://localhost:8080/swagger-ui/index.html");
     }
 
     @Override

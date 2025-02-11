@@ -148,4 +148,35 @@ public class UserService implements UserDetailsService {
         }
         return new User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
+
+    public void populateDatabaseWithUsers() {
+        UserCreateDTO user1 = new UserCreateDTO(
+            "user1@example.com",
+            "Password1",
+            "FirstName1",
+            "LastName1",
+            "Address1",
+            "1234567890"
+        );
+        UserCreateDTO user2 = new UserCreateDTO(
+            "user2@example.com",
+            "Password2",
+            "FirstName2",
+            "LastName2",
+            "Address2",
+            "0987654321"
+        );
+        UserCreateDTO user3 = new UserCreateDTO(
+            "user3@example.com",
+            "Password3",
+            "FirstName3",
+            "LastName3",
+            "Address3",
+            "1122334455"
+        );
+    
+        this.create(user1);
+        this.create(user2);
+        this.create(user3);
+    }
 }

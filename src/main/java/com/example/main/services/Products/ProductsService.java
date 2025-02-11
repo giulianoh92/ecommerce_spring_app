@@ -193,7 +193,7 @@ public class ProductsService {
     }
 
     public void populateDatabaseWithProducts() {
-        List<Categories> categories = new ArrayList<Categories>();
+        List<Categories> categories = new ArrayList<>();
         categories.add(new Categories("Electrónicos"));
         categories.add(new Categories("Hogar"));
         categories.add(new Categories("Deportes"));
@@ -202,25 +202,49 @@ public class ProductsService {
         categories.add(new Categories("Calzado"));
         categories.add(new Categories("Accesorios"));
         categories.add(new Categories("Libros"));
-
+    
         categoriesRepository.saveAll(categories);
-
-        List<Products> products = new ArrayList<Products>();
-        products.add(new Products("Laptop", "Laptop HP", 500.00, 10, "https://www.google.com", categories.get(0)));
-        products.add(new Products("Smartphone", "Smartphone Samsung", 300.00, 20, "https://www.google.com", categories.get(0)));
-        products.add(new Products("TV", "TV LG", 400.00, 15, "https://www.google.com", categories.get(0)));
-        products.add(new Products("Sofá", "Sofá de 3 plazas", 200.00, 5, "https://www.google.com", categories.get(1)));
-        products.add(new Products("Mesa", "Mesa de centro", 100.00, 10, "https://www.google.com", categories.get(1)));
-        products.add(new Products("Bicicleta", "Bicicleta de montaña", 150.00, 8, "https://www.google.com", categories.get(2)));
-        products.add(new Products("Balón", "Balón de fútbol", 20.00, 30, "https://www.google.com", categories.get(2)));
-        products.add(new Products("Muñeca", "Muñeca Barbie", 10.00, 50, "https://www.google.com", categories.get(3)));
-        products.add(new Products("Camisa", "Camisa de vestir", 30.00, 25, "https://www.google.com", categories.get(4)));
-        products.add(new Products("Zapatos", "Zapatos de cuero", 40.00, 20, "https://www.google.com", categories.get(5)));
-        products.add(new Products("Reloj", "Reloj de pulsera", 50.00, 15, "https://www.google.com", categories.get(6)));
-        products.add(new Products("Lentes", "Lentes de sol", 15.00, 40, "https://www.google.com", categories.get(6)));
-        products.add(new Products("Libro", "Libro de ciencia ficción", 5.00, 100, "https://www.google.com", categories.get(7)));
-
-        productsRepository.saveAll(products);
+    
+        List<ProductCreateDTO> products = new ArrayList<>();
+        products.add(new ProductCreateDTO("Laptop", "Laptop HP", 500.00, 10, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Smartphone", "Smartphone Samsung", 300.00, 20, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("TV", "TV LG", 400.00, 15, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Sofá", "Sofá de 3 plazas", 200.00, 5, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Mesa", "Mesa de centro", 100.00, 10, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Bicicleta", "Bicicleta de montaña", 150.00, 8, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Balón", "Balón de fútbol", 20.00, 30, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Muñeca", "Muñeca Barbie", 10.00, 50, "https://www.google.com", categories.get(3).getId()));
+        products.add(new ProductCreateDTO("Camisa", "Camisa de vestir", 30.00, 25, "https://www.google.com", categories.get(4).getId()));
+        products.add(new ProductCreateDTO("Zapatos", "Zapatos de cuero", 40.00, 20, "https://www.google.com", categories.get(5).getId()));
+        products.add(new ProductCreateDTO("Reloj", "Reloj de pulsera", 50.00, 15, "https://www.google.com", categories.get(6).getId()));
+        products.add(new ProductCreateDTO("Lentes", "Lentes de sol", 15.00, 40, "https://www.google.com", categories.get(6).getId()));
+        products.add(new ProductCreateDTO("Libro", "Libro de ciencia ficción", 5.00, 100, "https://www.google.com", categories.get(7).getId()));
+    
+        // Adding 20 more sample products
+        products.add(new ProductCreateDTO("Tablet", "Tablet Apple", 600.00, 12, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Monitor", "Monitor Dell", 250.00, 18, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Teclado", "Teclado mecánico", 80.00, 30, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Mouse", "Mouse inalámbrico", 40.00, 25, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Impresora", "Impresora HP", 150.00, 10, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Cámara", "Cámara Canon", 700.00, 8, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Auriculares", "Auriculares Sony", 120.00, 20, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Altavoces", "Altavoces Bose", 300.00, 15, "https://www.google.com", categories.get(0).getId()));
+        products.add(new ProductCreateDTO("Microondas", "Microondas LG", 100.00, 10, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Refrigerador", "Refrigerador Samsung", 800.00, 5, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Lavadora", "Lavadora Whirlpool", 600.00, 7, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Tostadora", "Tostadora Philips", 50.00, 20, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Licuadora", "Licuadora Oster", 70.00, 15, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Cafetera", "Cafetera Nespresso", 150.00, 10, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Aspiradora", "Aspiradora Dyson", 400.00, 8, "https://www.google.com", categories.get(1).getId()));
+        products.add(new ProductCreateDTO("Cinta de correr", "Cinta de correr ProForm", 1000.00, 5, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Pesas", "Pesas ajustables", 200.00, 20, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Raqueta", "Raqueta de tenis", 150.00, 15, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Patines", "Patines en línea", 100.00, 25, "https://www.google.com", categories.get(2).getId()));
+        products.add(new ProductCreateDTO("Casco", "Casco de ciclismo", 80.00, 30, "https://www.google.com", categories.get(2).getId()));
+    
+        for (ProductCreateDTO product : products) {
+            this.create(product);
+        }
     }
     
 }

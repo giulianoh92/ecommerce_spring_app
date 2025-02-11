@@ -212,16 +212,10 @@ public class HttpController {
         return new ResponseEntity<>("Estado del pedido actualizado con éxito", HttpStatus.OK);
     }
     
-    @GetMapping("/products/populate")
-    public ResponseEntity<Object> populateDatabaseWithProducts() {
+    @GetMapping("/populate")
+    public ResponseEntity<Object> populateDatabase() {
         mainController.populateDatabaseWithSampleData();
-        return new ResponseEntity<>("Base de datos poblada con productos", HttpStatus.OK);
-    }
-
-    @GetMapping("/users/orders/statuses/populate")
-    public ResponseEntity<Object> populateDatabaseWithStatuses() {
-        mainController.populateDatabaseWithStatuses();
-        return new ResponseEntity<>("Base de datos poblada con estados", HttpStatus.OK);
+        return new ResponseEntity<>("Base de datos poblada", HttpStatus.OK);
     }
 
 }

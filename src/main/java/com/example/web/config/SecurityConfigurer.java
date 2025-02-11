@@ -42,7 +42,8 @@ public class SecurityConfigurer {
                     config.setAllowedHeaders(Arrays.asList("*"));
                     return config;
                 }))
-                .authorizeHttpRequests(requests -> requests.requestMatchers("/users/login", "/users/register").permitAll()
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/users/login", "/users/register", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

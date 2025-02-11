@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem('token');
     let products = []; // Variable global para almacenar los productos
     let currentPage = 1;
-    const itemsPerPage = 10;
+    const itemsPerPage = 24;
 
     if (!token) {
         window.location.href = 'login.html'; // Redirige al login si no se encuentra el token
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('modalProductDescription').textContent = product.description;
         document.getElementById('modalProductPrice').textContent = `Precio: $${product.unitPrice}`;
         document.getElementById('modalProductStock').textContent = `Stock: ${product.stock}`;
-        document.getElementById('modalProductCategory').textContent = `Categoría: ${product.category.name}`;
+        document.getElementById('modalProductCategory').textContent = `Categoría: ${product.category}`;
         const quantityInput = document.getElementById('productQuantity');
         quantityInput.max = product.stock;
         quantityInput.min = 1; // Establece el límite inferior a 1
