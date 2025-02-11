@@ -25,6 +25,11 @@ import com.example.main.services.Products.dto.ProductUpdateDTO;
 
 import jakarta.validation.Valid;
 
+/**
+ * Clase controladora para la creación de endpoints HTTP
+ * permite la creación de endpoints para la comunicación con el frontend
+ * 
+ */
 @Validated
 @RestController
 @RequestMapping("/products")

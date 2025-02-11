@@ -7,5 +7,5 @@ import com.example.main.domain.models.Categories;
 @Repository
 public interface CategoriesRepository extends JpaRepository<Categories, Long> {
 
-    Object findByName(String name);
+    Object findByName(String name); // encontrar categoria por nombre
 }

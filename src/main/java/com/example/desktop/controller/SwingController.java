@@ -50,29 +50,34 @@ public class SwingController {
         orders = Collections.emptyList();
         users = Collections.emptyList();
     
+        // Crear el marco principal de la aplicación
         JFrame frame = new JFrame("Panel de Administracion");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
     
+        // Crear el panel de pestañas
         JTabbedPane tabbedPane = new JTabbedPane();
     
+        // Definir los nombres de las columnas para cada entidad
         String[] userColumnNames = {"ID", "Nombre", "Apellido", "Email", "Direccion", "Telefono"};
         String[] productColumnNames = {"ID", "Nombre", "Descripcion", "Precio", "Stock", "Categoria"};
         String[] orderColumnNames = {"ID", "ID del cliente", "Estado", "Total"};
     
+        // Crear las pestañas para cada entidad
         EntityTab<UserGetDTO> usersTab = new EntityTab<>(user -> new Object[]{user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getAddress(), user.getPhoneNumber()}, userColumnNames, null);
         EntityTab<ProductGetDTO> productsTab = new EntityTab<>(product -> new Object[]{product.getId(), product.getName(), product.getDescription(), product.getUnitPrice(), product.getStock(), product.getCategory()}, productColumnNames, null);
         productsTab.getTable().addMouseListener(createProductMouseListener(productsTab));
         EntityTab<OrderGetDTO> ordersTab = new EntityTab<>(order -> new Object[]{order.getId(), order.getUserId(), order.getStatus(), order.getTotal()}, orderColumnNames, null);
         ordersTab.getTable().addMouseListener(createOrderMouseListener(ordersTab));
     
-        // Add refresh buttons
+        // Botón para actualizar la pestaña de usuarios
         JButton refreshUsersButton = new JButton("Actualizar");
         refreshUsersButton.addActionListener(e -> refreshUsersTab(usersTab));
         JPanel usersPanel = new JPanel(new BorderLayout());
         usersPanel.add(refreshUsersButton, BorderLayout.NORTH);
         usersPanel.add(new JScrollPane(usersTab.getTable()), BorderLayout.CENTER);
     
+        // Botones para la pestaña de productos
         JButton refreshProductsButton = new JButton("Actualizar");
         refreshProductsButton.addActionListener(e -> refreshProductsTab(productsTab));
         JButton addProductButton = new JButton("Agregar Producto");
@@ -92,6 +97,7 @@ public class SwingController {
             refreshProductsTab(productsTab);
         });
 
+        // Panel para los botones de productos
         JPanel productsPanel = new JPanel(new BorderLayout());
         JPanel productsButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         productsButtonPanel.add(refreshProductsButton);
@@ -102,22 +108,27 @@ public class SwingController {
         productsPanel.add(productsButtonPanel, BorderLayout.NORTH);
         productsPanel.add(new JScrollPane(productsTab.getTable()), BorderLayout.CENTER);
     
+        // Botón para actualizar la pestaña de pedidos
         JButton refreshOrdersButton = new JButton("Actualizar");
         refreshOrdersButton.addActionListener(e -> refreshOrdersTab(ordersTab));
         JPanel ordersPanel = new JPanel(new BorderLayout());
         ordersPanel.add(refreshOrdersButton, BorderLayout.NORTH);
         ordersPanel.add(new JScrollPane(ordersTab.getTable()), BorderLayout.CENTER);
     
+        // Añadir las pestañas al panel de pestañas
         tabbedPane.add("Clientes", usersPanel);
         tabbedPane.add("Productos", productsPanel);
         tabbedPane.add("Pedidos", ordersPanel);
     
+        // Añadir el panel de pestañas al marco principal
         frame.add(tabbedPane);
         frame.setVisible(true);
     
+        // Refrescar las pestañas al iniciar la aplicación
         refreshTabs(usersTab, productsTab, ordersTab);
     }
 
+    // Método para eliminar un producto seleccionado
     private void deleteSelectedProduct(EntityTab<ProductGetDTO> productsTab) {
         JTable table = productsTab.getTable();
         int selectedRow = table.getSelectedRow();
@@ -139,6 +150,7 @@ public class SwingController {
         }
     }
 
+    // Método para crear un MouseAdapter para la tabla de pedidos
     private MouseAdapter createOrderMouseListener(EntityTab<OrderGetDTO> ordersTab) {
         return new MouseAdapter() {
             @Override
@@ -159,6 +171,7 @@ public class SwingController {
         };
     }
 
+    // Método para abrir el diálogo de edición de pedidos
     private void openEditOrderDialog(OrderGetDTO order, EntityTab<OrderGetDTO> ordersTab) {
         List<Statuses> statusesList = serviceContainer.ordersService.getAllStatuses();
         Map<Long, String> statuses = convertStatusesToMap(statusesList);
@@ -177,6 +190,7 @@ public class SwingController {
         }
     }
 
+    // Método para refrescar la pestaña de pedidos
     private void refreshOrdersTab(EntityTab<OrderGetDTO> ordersTab) {
         try {
             orders = serviceContainer.ordersService.getAll();
@@ -186,6 +200,7 @@ public class SwingController {
         }
     }
 
+    // Método para crear un MouseAdapter para la tabla de productos
     private MouseAdapter createProductMouseListener(EntityTab<ProductGetDTO> productsTab) {
         return new MouseAdapter() {
             @Override
@@ -206,6 +221,7 @@ public class SwingController {
         };
     }
 
+    // Método para abrir el diálogo de agregar producto
     private void openAddProductDialog(EntityTab<ProductGetDTO> productsTab) {
         List<Categories> categoriesList = serviceContainer.productsService.getAllCategories();
         Map<Long, String> categories = convertCategoriesToMap(categoriesList);
@@ -232,6 +248,7 @@ public class SwingController {
         }
     }
 
+    // Método para abrir el diálogo de edición de producto
     private void openEditProductDialog(ProductGetDTO product, EntityTab<ProductGetDTO> productsTab) {
         List<Categories> categoriesList = serviceContainer.productsService.getAllCategories();
         Map<Long, String> categories = convertCategoriesToMap(categoriesList);
@@ -257,15 +274,14 @@ public class SwingController {
         }
     }
 
+    // Método para refrescar todas las pestañas
     private void refreshTabs(EntityTab<UserGetDTO> usersTab, EntityTab<ProductGetDTO> productsTab, EntityTab<OrderGetDTO> ordersTab) {
-
         refreshUsersTab(usersTab);
-
         refreshProductsTab(productsTab);
-
         refreshOrdersTab(ordersTab);
     }
 
+    // Método para refrescar la pestaña de productos
     private void refreshProductsTab(EntityTab<ProductGetDTO> productsTab) {
         try {
             products = serviceContainer.productsService.getAll(currentPage, pageSize, null, null, null, null, null, null, "id", "asc");
@@ -280,6 +296,7 @@ public class SwingController {
         }
     }
 
+    // Método para refrescar la pestaña de usuarios
     private void refreshUsersTab(EntityTab<UserGetDTO> usersTab) {
         try {
             users = serviceContainer.userService.getAll();
@@ -291,6 +308,7 @@ public class SwingController {
         }
     }
 
+    // Método para mostrar errores de validación
     private void showValidationErrors(Set<? extends ConstraintViolation<?>> violations) {
         StringBuilder errorMessage = new StringBuilder("Errores de validación:\n");
         for (ConstraintViolation<?> violation : violations) {
@@ -299,11 +317,13 @@ public class SwingController {
         JOptionPane.showMessageDialog(null, errorMessage.toString(), "Errores de validación", JOptionPane.ERROR_MESSAGE);
     }
 
+    // Método para convertir una lista de estados a un mapa
     private Map<Long, String> convertStatusesToMap(List<Statuses> statusesList) {
         return statusesList.stream()
                 .collect(Collectors.toMap(Statuses::getId, Statuses::getName));
     }
 
+    // Método para convertir una lista de categorías a un mapa
     private Map<Long, String> convertCategoriesToMap(List<Categories> categoriesList) {
         return categoriesList.stream()
                 .collect(Collectors.toMap(Categories::getId, Categories::getName));

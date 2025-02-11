@@ -1,9 +1,10 @@
+import { apiUrl } from "./auth";
+
 document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://localhost:8080'; // Ajusta la URL de la API según sea necesario
     const token = localStorage.getItem('token');
     let products = []; // Variable global para almacenar los productos
     let currentPage = 1;
-    const itemsPerPage = 9;
+    const itemsPerPage = 9; // limita el número de productos por página
 
     if (!token) {
         window.location.href = 'login.html'; // Redirige al login si no se encuentra el token
@@ -45,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const categoryFilter = document.getElementById('categoryFilter').value;
         const minPrice = document.getElementById('minPrice').value;
         const maxPrice = document.getElementById('maxPrice').value;
-        const sortBy = 'name'; // Puedes cambiar esto según el criterio de ordenamiento deseado
-        const order = 'asc'; // Puedes cambiar esto a 'desc' para orden descendente
+        const sortBy = 'name';
+        const order = 'asc';
 
         try {
             const response = await fetch(`${apiUrl}/products?page=${currentPage}&limit=${itemsPerPage}&q=${searchQuery}&categoryId=${categoryFilter}&minPrice=${minPrice}&maxPrice=${maxPrice}&inStock=true&active=true&sortBy=${sortBy}&order=${order}`, {
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
     
-            // Genera un color pastel aleatorio
+            // Genera un color aleatorio
             const pastelColor = `hsl(${Math.random() * 360}, 100%, 85%)`;
     
             productCard.innerHTML = `

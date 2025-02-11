@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+/*
+ * Clase de utilidad para la generación y validación de tokens JWT
+ * permite la generación y validación de tokens JWT para la autenticación de los usuarios
+ * en la aplicación
+ */
+
 @Component
 public class JwtUtil {
 

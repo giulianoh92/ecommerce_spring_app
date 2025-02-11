@@ -20,6 +20,14 @@ import com.example.main.services.Products.dto.ProductCreateDTO;
 import com.example.main.services.Products.dto.ProductGetDTO;
 import com.example.main.services.Products.dto.ProductUpdateDTO;
 
+
+/*
+ * ProductsService
+ * esta clase se encarga de manejar la lógica de negocio relacionada con los productos
+ * contiene métodos para obtener, crear, actualizar y eliminar productos
+ * también contiene métodos para obtener categorías y crear nuevas categorías
+ * además, contiene un método para poblar la base de datos con productos de ejemplo
+ */
 @Service
 public class ProductsService {
 

@@ -21,6 +21,14 @@ import com.example.main.domain.repositories.UsersRepository;
 import com.example.main.error.CustomError;
 import com.example.main.services.Carts.dto.CartGetDTO;
 
+
+/*
+ * CartsService
+ * esta clase se encarga de manejar la lógica de negocio relacionada con los carritos
+ * contiene métodos para obtener, crear, actualizar y eliminar carritos
+ * también contiene métodos para agregar, actualizar y eliminar items de un carrito
+ * y para realizar el checkout de un carrito
+ */
 @Service
 public class CartsService {
 

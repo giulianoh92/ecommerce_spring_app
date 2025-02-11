@@ -16,6 +16,7 @@ public class EntityTab<T> extends JPanel {
     @SuppressWarnings("unused")
     private String[] columnNames;
 
+    // Constructor para inicializar la pestaña de entidad
     public EntityTab(Function<T, Object[]> rowMapper, String[] columnNames, MouseListener mouseListener) {
         this.rowMapper = rowMapper;
         this.columnNames = columnNames;
@@ -50,11 +51,13 @@ public class EntityTab<T> extends JPanel {
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
+    // Método para refrescar los datos de la tabla
     public void refresh(List<T> data) {
         this.data = data != null ? data : Collections.emptyList();
         ((AbstractTableModel) table.getModel()).fireTableDataChanged();
     }
 
+    // Método para obtener la tabla
     public JTable getTable() {
         return table;
     }

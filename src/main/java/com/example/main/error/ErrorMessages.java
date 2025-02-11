@@ -3,6 +3,11 @@ package com.example.main.error;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ErrorMessages
+ * esta clase se encarga de manejar los mensajes de error que se enviarán en la respuesta de la API
+ * contiene un mapa con los mensajes de error y su respectivo código de estado HTTP
+ */
 public class ErrorMessages {
     private static final Map<Integer, ErrorDetail> errorMessages = new HashMap<>();
 

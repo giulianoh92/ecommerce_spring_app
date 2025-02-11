@@ -82,13 +82,11 @@ public class MainController {
     }
 
     public List<Categories> getAllCategories() {
-        List<Categories> categories = serviceContainer.productsService.getAllCategories();
-        return categories;
+        return serviceContainer.productsService.getAllCategories();
     }
 
     public Categories getCategoryById(long id) {
-        Categories category = serviceContainer.productsService.getCategoryById(id);
-        return category;
+        return serviceContainer.productsService.getCategoryById(id);
     }
 
     public void createCategory(CategoryCreateDTO category) {

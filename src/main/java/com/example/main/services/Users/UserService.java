@@ -25,6 +25,15 @@ import com.example.web.utils.JwtUtil;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+/**
+ * UserService
+ * esta clase se encarga de manejar la lógica de negocio relacionada con los usuarios
+ * contiene métodos para obtener, crear, actualizar y eliminar usuarios
+ * también contiene métodos para autenticar usuarios y generar tokens JWT
+ * implementa la interfaz UserDetailsService de Spring Security
+ * para poder autenticar usuarios en la aplicación
+ */
+
 @Service
 public class UserService implements UserDetailsService {
 

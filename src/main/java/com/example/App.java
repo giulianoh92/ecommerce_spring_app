@@ -19,10 +19,10 @@ public class App implements CommandLineRunner {
     private DatabaseConnection databaseConnection;
 
     public static void main(String[] args) {
-        // Set the headless property to false
+        // setear la propiedad java.awt.headless a false para que se pueda mostrar la interfaz gráfica
         System.setProperty("java.awt.headless", "false");
         SpringApplication.run(App.class, args);
-        System.out.println("Swagger documentation available at: http://localhost:8080/swagger-ui/index.html");
+        System.out.println("Documentación Swagger disponible en: http://localhost:8080/swagger-ui/index.html");
     }
 
     @Override
@@ -36,10 +36,10 @@ public class App implements CommandLineRunner {
         }
 
         if (launchUI && !GraphicsEnvironment.isHeadless()) {
-            databaseConnection.connect();
-            swingController.initializeUI();
+            databaseConnection.connect(); // conectar a la base de datos
+            swingController.initializeUI(); // lanzar la interfaz gráfica
         } else {
-            System.out.println("API is running. Swing GUI will not be displayed.");
+            System.out.println("La API está corriendo en segundo plano. Para lanzar la interfaz gráfica, ejecute el programa con el argumento --ui");
         }
     }
 }

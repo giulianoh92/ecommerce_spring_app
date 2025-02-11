@@ -15,6 +15,14 @@ import com.example.main.error.CustomError;
 import com.example.main.services.Orders.dto.OrderGetDTO;
 import com.example.main.services.Orders.dto.OrderUpdateDTO;
 
+
+/**
+ * OrdersService
+ * esta clase se encarga de manejar la lógica de negocio relacionada con los pedidos
+ * contiene métodos para obtener, crear, actualizar y eliminar pedidos
+ * también contiene métodos para obtener y actualizar los estados de los pedidos
+ * y para obtener los estados disponibles
+ */
 @Service
 public class OrdersService {
 

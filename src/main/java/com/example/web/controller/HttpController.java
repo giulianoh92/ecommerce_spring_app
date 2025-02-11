@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.main.controllers.MainController;
 
+/**
+ * Clase controladora para la creación de endpoints HTTP
+ * permite la creación de endpoints para la comunicación con el frontend
+ */
 
 @Validated
 @RestController

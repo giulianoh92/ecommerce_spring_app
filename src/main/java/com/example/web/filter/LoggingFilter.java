@@ -15,6 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/*
+ * Clase de filtro para el registro de las peticiones HTTP
+ * permite el registro de las peticiones HTTP entrantes y salientes
+ * en la consola de la aplicación
+ */
 @Component
 public class LoggingFilter implements Filter {
 

@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository;
 public interface ProductsRepository extends JpaRepository<Products, Long> {
     Products findByName(String name);
 
+    // encontrar productos con parametros de paginacion, orden y filtro
     Page<Products> findByNameContainingAndCategoryIdAndUnitPriceBetweenAndStockGreaterThanAndActiveTrue(
         String name, Long categoryId, Double minPrice, Double maxPrice, int stock, Pageable pageable);
 
+    // encontrar productos con parametros de paginacion, orden y filtro (sin categoria)
     Page<Products> findByNameContainingAndUnitPriceBetweenAndStockGreaterThanAndActiveTrue(
         String name, Double minPrice, Double maxPrice, int stock, Pageable pageable);
 }

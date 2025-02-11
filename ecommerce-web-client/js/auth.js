@@ -1,7 +1,8 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const apiUrl = 'http://localhost:8080'; // Adjust the API URL as needed
+export const apiUrl = 'http://localhost:8080';
 
-    // Function to handle user registration
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Funcion para manejar el registro de usuarios
     async function registerUser(event) {
         event.preventDefault();
         
@@ -30,13 +31,13 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             alert('Registration successful! You can now log in.');
-            window.location.href = 'login.html'; // Redirect to login page
+            window.location.href = 'login.html'; // redirigir a la página de inicio de sesión
         } catch (error) {
             displayErrorMessage(error.message);
         }
     }
 
-    // Function to handle user login
+    // funcion para manejar el inicio de sesión de usuarios
     async function loginUser(event) {
         event.preventDefault();
         
@@ -60,15 +61,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error(errorData.detail || 'Login failed');
             }
     
-            const token = await response.text(); // Read response as text
-            localStorage.setItem('token', token); // Store JWT token
-            window.location.href = 'home.html'; // Redirect to home page
+            const token = await response.text(); // leer el token JWT de la respuesta
+            localStorage.setItem('token', token); // guardar el token en el almacenamiento local
+            window.location.href = 'home.html'; // redirigir a la página de inicio
         } catch (error) {
             displayErrorMessage(error.message);
         }
     }
 
-    // Function to display error messages
+    // funcion para mostrar mensajes de error
     function displayErrorMessage(message) {
         const errorContainer = document.getElementById('errorContainer');
         if (errorContainer) {
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Event listeners for the forms
+    // Event listeners para los formularios de registro e inicio de sesión
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', registerUser);

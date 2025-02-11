@@ -12,6 +12,12 @@ import java.util.Map;
 
 import jakarta.validation.*;
 
+
+/**
+ * GlobalExceptionHandler
+ * esta clase se encarga de manejar las excepciones globales que se generen en la aplicación
+ * contiene manejadores para errores personalizados, errores de validación y errores de enlace de datos
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 

@@ -21,6 +21,11 @@ import com.example.main.services.Users.dto.UserGetDTO;
 import com.example.main.services.Users.dto.UserLoginDTO;
 import com.example.main.services.Users.dto.UserUpdateDTO;
 
+/*
+ * Clase controladora para la creación de endpoints HTTP
+ * permite la creación de endpoints para la comunicación con el frontend
+ * 
+ */
 @Validated
 @RestController
 @RequestMapping("/users")

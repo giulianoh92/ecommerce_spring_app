@@ -15,6 +15,11 @@ import com.example.main.domain.repositories.ProductsRepository;
 import com.example.main.domain.repositories.StatusesRepository;
 import com.example.main.domain.repositories.UsersRepository;
 
+/*
+ * ServiceContainer
+ * esta clase se encarga de contener todos los servicios de la aplicación
+ * y de inyectar las dependencias necesarias para cada uno de ellos
+ */
 @Component
 public class ServiceContainer {
 

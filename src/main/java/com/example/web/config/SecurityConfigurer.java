@@ -17,6 +17,14 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
 
+
+/**
+ * Clase de configuración para la seguridad de la aplicación
+ * permite la comunicación con el frontend y la autenticación de los usuarios
+ * además de la configuración de los filtros de seguridad
+ * 
+ * define ruta de acceso a los endpoints de la aplicación
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer {

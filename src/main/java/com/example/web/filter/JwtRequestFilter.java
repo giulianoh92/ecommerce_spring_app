@@ -17,6 +17,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/*
+ * Clase de filtro para la autenticación de los usuarios
+ * permite la autenticación de los usuarios mediante el token JWT
+ */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
