@@ -1,6 +1,5 @@
-export const apiUrl = 'http://localhost:8080';
-
 document.addEventListener("DOMContentLoaded", function() {
+    const apiUrl = 'http://localhost:8080';
 
     // Funcion para manejar el registro de usuarios
     async function registerUser(event) {
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error(errorData.detail || 'Registration failed');
             }
 
-            alert('Registration successful! You can now log in.');
             window.location.href = 'login.html'; // redirigir a la página de inicio de sesión
         } catch (error) {
             displayErrorMessage(error.message);

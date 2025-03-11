@@ -1,6 +1,6 @@
-import { apiUrl } from "./auth";
 
 document.addEventListener("DOMContentLoaded", function() {
+    const apiUrl = 'http://localhost:8080';
     const token = localStorage.getItem('token');
     let products = []; // Variable global para almacenar los productos
     let currentPage = 1;
