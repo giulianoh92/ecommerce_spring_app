@@ -2,12 +2,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>spring-boot-basic</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.ecommerce</groupId>
+    <artifactId>ecommerce-spring-app</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>spring-boot-basic</name>
+    <name>ecommerce-spring-app</name>
     <description>Demo project for Spring Boot</description>
 
     <parent>
@@ -17,7 +17,7 @@
     </parent>
 
     <properties>
-        <start-class>com.example.App</start-class>
+        <start-class>com.ecommerce.App</start-class>
         <java.version>17</java.version>
     </properties>
 
