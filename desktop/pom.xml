@@ -14,13 +14,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-        
-    <dependency>
-        <groupId>org.openjdk</groupId>
-        <artifactId>jdk-swing</artifactId>
-        <version>17</version> <!-- O usa la versión de tu JDK -->
-        <scope>provided</scope>
-    </dependency>
 
     <!-- Dependencia para manejo de JSON (opcional, útil para APIs REST) -->
     <dependency>
