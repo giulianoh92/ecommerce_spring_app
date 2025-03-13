@@ -17,16 +17,14 @@
 
     <!-- Dependencia para manejo de JSON (opcional, útil para APIs REST) -->
     <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20210307</version>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20210307</version>
     </dependency>
-
-    <!-- Dependencia para realizar peticiones HTTP con HttpClient -->
     <dependency>
-        <groupId>org.apache.httpcomponents.client5</groupId>
-        <artifactId>httpclient5</artifactId>
-        <version>5.2</version>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.1</version>
     </dependency>
   </dependencies>
   <build>

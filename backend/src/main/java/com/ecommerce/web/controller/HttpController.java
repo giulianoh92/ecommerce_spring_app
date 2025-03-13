@@ -27,4 +27,8 @@ public class HttpController {
         return new ResponseEntity<>("Base de datos poblada", HttpStatus.OK);
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Object> greeting() {
+        return new ResponseEntity<>("¡Hola, Mundo!", HttpStatus.OK);
+    }
 }

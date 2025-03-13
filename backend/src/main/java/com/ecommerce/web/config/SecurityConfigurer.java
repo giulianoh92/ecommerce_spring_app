@@ -52,7 +52,7 @@ public class SecurityConfigurer {
                     return config;
                 }))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/users/login", "/users/register", "/swagger-ui/**", "/v3/api-docs/**", "/populate").permitAll()
+                        .requestMatchers("/users/login", "/users/register", "/swagger-ui/**", "/v3/api-docs/**", "/populate", "/").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
